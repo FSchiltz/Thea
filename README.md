@@ -1,2 +1,2 @@
 # Thea
-Tea Management System
+Tea management system

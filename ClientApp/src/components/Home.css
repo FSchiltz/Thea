@@ -1,0 +1,28 @@
+.trips-container ul {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    -ms-align-items: flex-start;
+    align-items: flex-start;
+  }
+  
+  .trips-container ul li {
+    width: 220px;
+    height: 165px;
+    overflow: hidden;
+    margin-bottom: 15px;
+  }
+  
+  .trips-container ul img {
+    width: 100%;
+    transform: scale(1.25);
+    transition: transform 1.25s;
+  }
+  
+  .trips-container li:hover img {
+    transform: scale(1.65);
+  }
+  
+  .trips-container .not-found {
+    width: 100%;
+  }
