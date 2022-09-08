@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Thea.Data;
 using Thea.Models;
 
 namespace Thea.Controllers;
@@ -8,40 +9,43 @@ namespace Thea.Controllers;
 public class TeaController : ControllerBase
 {
     private readonly ILogger<TeaController> _logger;
+    private readonly IDataStore _datastore;
 
-    public TeaController(ILogger<TeaController> logger)
+    public TeaController(IDataStore datastore, ILogger<TeaController> logger)
     {
         _logger = logger;
+        _datastore = datastore;
     }
 
     [HttpGet]
-    public IEnumerable<Tea> Get()
+    public async Task<IEnumerable<Tea>> GetAsync()
     {
         _logger.LogInformation("Get teas");
 
-        return Enumerable.Range(1, 5).Select(index => new Tea(Guid.NewGuid(), "Test")
-        {
-            Duration = new TimeSpan(0, 0, 26),
-            Description = "Test description",
-            Temperature = 100,
-        })
-        .ToArray();
+        return await _datastore.GetTeasAsync();
     }
 
     [HttpPost]
-    public void Post([FromBody] Tea tea)
+    public async Task PostAsync([FromBody] Tea tea)
     {
         _logger.LogInformation("New tea added");
+
+        await _datastore.SaveTeaAsync(tea);
     }
 
     [HttpGet("{id}")]
-    public Tea GetTea([FromRoute] Guid id)
+    public async Task<Tea> GetTeaAsync([FromRoute] Guid id)
     {
-        return new Tea(id, "Test")
-        {
-            Duration = new TimeSpan(0, 1, 23),
-            Description = "Test description",
-            Temperature = 100,
-        };
+        _logger.LogInformation("Get tea {Id}", id);
+
+        return await _datastore.GetTeaAsync(id);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task DeleteTeaAsync([FromRoute] Guid id)
+    {
+        _logger.LogInformation("Delete tea {Id}", id);
+
+        await _datastore.DeleteTeaAsync(id);
     }
 }
