@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, CardBody, CardTitle, Card, CardText, CardGroup, CardSubtitle, Form, FormGroup, Label, Input, Col } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, CardBody, CardTitle, Card, CardText, CardGroup, CardSubtitle } from 'reactstrap';
 import CountdownTimer from './CountdownTimer';
 import { getTime } from '../hooks/useCountdown';
 import './Home.css';
+import { AddForm } from './AddForm';
 
 export class Home extends Component {
 	static displayName = Home.name;
 
 	constructor(props) {
 		super(props);
-		this.state = { teas: [], loading: true, duration: null, tea: null, timerOn: false };
+		this.state = { teas: [], loading: true, duration: null, tea: null, timerOn: false, newTea: {} };
 
 		// This binding is necessary to make `this` work in the callback 
 		this.handleClick = this.handleClick.bind(this);
@@ -17,6 +18,7 @@ export class Home extends Component {
 		this.closePopup = this.closePopup.bind(this);
 		this.closeAddPopup = this.closeAddPopup.bind(this);
 		this.saveNewTea = this.saveNewTea.bind(this);
+		this.formChanged = this.formChanged.bind(this);
 	}
 
 	componentDidMount() {
@@ -37,6 +39,10 @@ export class Home extends Component {
 
 	closeAddPopup() {
 		this.setState({ edit: false });
+	}
+
+	formChanged(event) {
+		this.setState({ newTea: event });
 	}
 
 	async selectTea() {
@@ -79,10 +85,27 @@ export class Home extends Component {
 	async saveNewTea() {
 		console.log("New tea saved");
 
-		const tea = { name: this.state.newName };
+		let minutes = this.state.newTea.durationMinutes;
+		if (!minutes)
+			minutes = 0;
+
+		let seconds = this.state.newTea.durationSeconds;
+		if (!seconds)
+			seconds = 0;
+
+		const tea = {
+			name: this.state.newTea.name,
+			description: this.state.newTea.description,
+			temperature: this.state.newTea.temperature,
+			duration: `00:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`,
+		};
+		
 		await fetch('/api/tea/', {
 			method: 'POST',
 			body: JSON.stringify(tea),
+			headers: {
+				'Content-Type': 'application/json',
+			},
 		})
 		this.closeAddPopup();
 	}
@@ -92,34 +115,7 @@ export class Home extends Component {
 			return <Modal isOpen={this.state.edit} className={this.props.className}>
 				<ModalHeader>Add</ModalHeader>
 				<ModalBody>
-					<Form onSubmit={this.saveNewTea}>
-						<FormGroup>
-							<Label for="name">Name</Label>
-							<Input type="text" name="name" id="name" placeholder="Name" value={this.state.newName} />
-						</FormGroup>
-
-						<FormGroup>
-							<Label for="description">Description</Label>
-							<Input type="text" name="description" id="description" placeholder="Description" />
-						</FormGroup>
-
-						<FormGroup row>
-							<Label>Duration</Label>
-							<Col>
-								<Label for="durationMinutes">Minutes</Label>
-								<Input type="number" name="durationMinutes" id="durationMinutes" placeholder="2" />
-							</Col>
-							<Col>
-								<Label for="durationSeconds">Seconds</Label>
-								<Input type="number" name="durationSeconds" id="durationSeconds" placeholder="0" />
-							</Col>
-						</FormGroup>
-
-						<FormGroup>
-							<Label for="temperature">Temperature</Label>
-							<Input type="number" name="temperature" id="temperature" placeholder="90" />
-						</FormGroup>
-					</Form>
+					<AddForm onChange={this.formChanged} name={this.state.newTea.name} description={this.state.newTea.description}></AddForm>
 				</ModalBody>
 				<ModalFooter>
 					<Button color="secondary" onClick={this.closeAddPopup}>Cancel</Button>
