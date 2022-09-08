@@ -11,7 +11,7 @@ export class AddForm extends Component {
             durationMinutes: this.props.durationMinutes,
             durationSeconds: this.props.durationSeconds,
         };
-        
+
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
         this.handleTemperatureChange = this.handleTemperatureChange.bind(this);

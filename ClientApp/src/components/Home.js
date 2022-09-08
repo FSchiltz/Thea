@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, CardBody, CardTitle, Card, CardText, CardGroup, CardSubtitle } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, CardBody, CardTitle, Card, CardText, CardSubtitle, CardDeck, CardGroup, Row, Col } from 'reactstrap';
 import CountdownTimer from './CountdownTimer';
 import { getTime } from '../hooks/useCountdown';
 import './Home.css';
@@ -14,6 +14,7 @@ export class Home extends Component {
 
 		// This binding is necessary to make `this` work in the callback 
 		this.handleClick = this.handleClick.bind(this);
+		this.handleDeleteClick = this.handleDeleteClick.bind(this);
 		this.openSavePopup = this.openSavePopup.bind(this);
 		this.closePopup = this.closePopup.bind(this);
 		this.closeAddPopup = this.closeAddPopup.bind(this);
@@ -25,8 +26,13 @@ export class Home extends Component {
 		this.populateteasData();
 	}
 
-	handleClick() {
-		this.selectTea();
+	handleClick(e) {
+		this.selectTea(e);
+	}
+
+	handleDeleteClick(e, id) {
+		e.preventDefault();
+		this.deleteTea(id);
 	}
 
 	closePopup() {
@@ -45,10 +51,15 @@ export class Home extends Component {
 		this.setState({ newTea: event });
 	}
 
-	async selectTea() {
-		// Changing state
-		const teaId = this.state.teas[0].id;
+	async deleteTea(teaId) {
+		await fetch('/api/tea/' + teaId, { method: 'DELETE' });
 
+		console.log('Tea deleted');
+
+		await this.populateteasData();
+	}
+
+	async selectTea(teaId) {
 		const response = await fetch('/api/tea/' + teaId);
 		const data = await response.json();
 
@@ -99,7 +110,7 @@ export class Home extends Component {
 			temperature: this.state.newTea.temperature,
 			duration: `00:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`,
 		};
-		
+
 		await fetch('/api/tea/', {
 			method: 'POST',
 			body: JSON.stringify(tea),
@@ -108,6 +119,7 @@ export class Home extends Component {
 			},
 		})
 		this.closeAddPopup();
+		await this.populateteasData();
 	}
 
 	renderAddForm() {
@@ -145,23 +157,42 @@ export class Home extends Component {
 		// map variables to each item in fetched image array and return image component
 		if (teas.length > 0) {
 			images = teas.map(tea =>
-			(
-				<Card key={tea.id} onClick={this.handleClick} style={{ cursor: "pointer" }}>
-					<CardBody>
-						<CardTitle tag="h3">{tea.name}</CardTitle>
-						<CardSubtitle tag="h5">{tea.temperature} C</CardSubtitle>
-						<CardText>{tea.description}</CardText>
-					</CardBody>
-				</Card>
+			(// TODO fix arrow function
+				<Col>
+					<Card key={tea.id} onClick={() => this.handleClick(tea.id)} style={{ cursor: "pointer" }}>
+						<CardBody>
+							<CardTitle tag="h3">{tea.name}</CardTitle>
+							<CardSubtitle tag="h5">{tea.temperature} C - {tea.duration}</CardSubtitle>
+							<CardText>{tea.description}</CardText>
+							<Button color="danger" onClick={(e) => this.handleDeleteClick(e, tea.id)}>Del</Button>
+						</CardBody>
+					</Card>
+				</Col>
 			));
 		} else {
-			noImages = <p>No teas</p>; // return 'not found' component if no images fetched
+			noImages = (<Card>
+				<CardBody>
+					<CardText>No teas</CardText>
+				</CardBody>
+			</Card>); 
+			// return 'not found' component if no images fetched
 		}
 
 		return (
 			<div className='teas-container'>
-				<CardGroup>{images}</CardGroup>
-				{noImages}
+				<Row className='row-cols-1 row-cols-md-4 row-cols-lg-8 g-1'>
+					<Col>
+						<Card color="primary" onClick={this.openSavePopup} style={{ cursor: "pointer" }}>
+							<CardBody>
+								<CardText>Add</CardText>
+							</CardBody>
+						</Card>
+					</Col>
+					{images}
+
+					{noImages}
+				</Row>
+
 			</div>
 		);
 	}
@@ -182,7 +213,6 @@ export class Home extends Component {
 
 		return (
 			<div>
-				<h1 id="tabelLabel" >Teas</h1> <Button outline color="primary" onClick={this.openSavePopup}>Add</Button>
 				{contents}
 			</div>
 		);
