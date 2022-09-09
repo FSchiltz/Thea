@@ -56,7 +56,7 @@ public class MQTTNotifyer : INotifyer
         }
         catch (Exception ex)
         {
-            logger.LogError("Error Mqtt", ex);
+            logger.LogError("Error Mqtt {message}: {stack}", ex.Message, ex.StackTrace);
         }
     }
 }
