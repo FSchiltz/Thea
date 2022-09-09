@@ -32,12 +32,9 @@ public class MQTTNotifyer : INotifyer
             .WithCredentials(_config.Username, _config.Password)
             .Build();
 
-        logger.LogInformation("MqttInfo: {host} {port} {username} {password} {topic}", _config.Host, _config.Port, _config.Username,_config.Password, _config.Topic);
         try
         {
             var result = await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
-
-            logger.LogInformation("Done connecting");
 
             if (result == null || result.ResultCode != 0)
                 logger.LogError("MQTT connection error: {code}", result?.ResultCode);
