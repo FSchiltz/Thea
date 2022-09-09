@@ -3,6 +3,7 @@ import CountdownTimer from './CountdownTimer';
 import { getTime } from '../hooks/useCountdown';
 import { AddForm } from './AddForm';
 import { NavBar } from './NavBar';
+import { createDuration, formatDuration } from '../helpers/Format';
 
 export class Home extends Component {
 	constructor(props) {
@@ -87,7 +88,7 @@ export class Home extends Component {
 
 	async deleteTea(teaId) {
 		await fetch('/api/tea/' + teaId, { method: 'DELETE' });
-		
+
 		console.log('Tea deleted');
 
 		await this.populateteasData();
@@ -147,7 +148,7 @@ export class Home extends Component {
 			name: this.state.newTea.name,
 			description: this.state.newTea.description,
 			temperature: this.state.newTea.temperature,
-			duration: `00:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`,
+			duration: createDuration(minutes, seconds),
 		};
 
 		await fetch('/api/tea/', {
@@ -230,7 +231,31 @@ export class Home extends Component {
 				<div className='card m-1' key={tea.id} >
 					<div className='card-content is-clickable' onClick={() => this.handleClick(tea.id)}>
 						<p className='title'>{tea.name}</p>
-						<p className='subtitle'>{tea.temperature} C - {tea.duration}</p>
+						<div className='level'>
+							<div className='level-left'>
+								<div className='level-item'>
+									<div className='box'>
+										<span className="icon is-small">
+											<svg className="feather">
+												<use href="/feather-sprite.svg#thermometer" />
+											</svg>
+										</span>
+										<span>{tea.temperature} °C</span>
+									</div>
+								</div>
+								<div className='level-item'>
+									<div className='box'>
+										<span className="icon is-small">
+											<svg className="feather">
+												<use href="/feather-sprite.svg#clock" />
+											</svg>
+										</span>
+										<span>{formatDuration(tea.duration)}</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
 						<div className='content'>{tea.description}</div>
 					</div>
 					<footer className="card-footer">

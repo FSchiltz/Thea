@@ -56,7 +56,7 @@ export class AddForm extends Component {
 
                 <div className="field">
                     <label className='label'>Description</label>
-                    <input className='input' type="text" name="description" placeholder="Description" value={this.state.description} onChange={this.handleDescriptionChange} />
+                    <input className='textarea' type="text" name="description" placeholder="Description" value={this.state.description} onChange={this.handleDescriptionChange} />
                 </div>
 
                 <div className="field is-horizontal">
