@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, CardBody, CardTitle, Card, CardText, CardSubtitle, CardDeck, CardGroup, Row, Col } from 'reactstrap';
 import CountdownTimer from './CountdownTimer';
 import { getTime } from '../hooks/useCountdown';
-import './Home.css';
 import { AddForm } from './AddForm';
+import { NavBar } from './NavBar';
 
 export class Home extends Component {
-	static displayName = Home.name;
-
 	constructor(props) {
 		super(props);
 		this.state = { teas: [], loading: true, duration: null, tea: null, timerOn: false, newTea: {} };
@@ -49,6 +46,8 @@ export class Home extends Component {
 
 	formChanged(event) {
 		this.setState({ newTea: event });
+		console.log('Form updated');
+		console.log(event);
 	}
 
 	async deleteTea(teaId) {
@@ -124,30 +123,52 @@ export class Home extends Component {
 
 	renderAddForm() {
 		if (this.state.edit) {
-			return <Modal isOpen={this.state.edit} className={this.props.className}>
-				<ModalHeader>Add</ModalHeader>
-				<ModalBody>
-					<AddForm onChange={this.formChanged} name={this.state.newTea.name} description={this.state.newTea.description}></AddForm>
-				</ModalBody>
-				<ModalFooter>
-					<Button color="secondary" onClick={this.closeAddPopup}>Cancel</Button>
-					<Button color="primary" onClick={this.saveNewTea}>Save</Button>
-				</ModalFooter>
-			</Modal>
+			const active = this.state.edit ? "is-active" : "";
+
+			return <div className={`modal ${active}`}>
+				<div className="modal-background"></div>
+				<div className='modal-content'>
+					<div className='modal-card'>
+						<header className="modal-card-head">
+							<p className="modal-card-title">Add</p>
+						</header>
+					</div>
+					<section className="modal-card-body">
+						<AddForm onChange={this.formChanged} name={this.state.newTea.name} description={this.state.newTea.description}
+							temperature={this.state.newTea.temperature} durationMinutes={this.state.newTea.durationMinutes}
+							durationSeconds={this.state.newTea.durationSeconds}></AddForm>
+					</section>
+					<footer className="modal-card-foot">
+						<button className="button is-success" onClick={this.saveNewTea}>Save changes</button>
+						<button className="button" onClick={this.closeAddPopup}>Cancel</button>
+					</footer>
+				</div>
+			</div>
 		}
 	}
 
 	renderTimer(duration) {
 		if (duration) {
-			return <Modal isOpen={this.state.timerOn} className={this.props.className}>
-				<ModalHeader>{this.state.tea.name}</ModalHeader>
-				<ModalBody>
-					<div><CountdownTimer targetDate={duration} total={getTime(new Date(duration))} /></div>
-				</ModalBody>
-				<ModalFooter>
-					<Button color="secondary" onClick={this.closePopup}>Cancel</Button>
-				</ModalFooter>
-			</Modal>;
+			const active = this.state.timerOn ? "is-active" : "";
+
+			return <div className={`modal ${active}`}>
+				<div className="modal-background"></div>
+				<div className='modal-content'>
+					<div className='modal-card'>
+						<header className="modal-card-head">
+							<p className="modal-card-title">{this.state.tea.name}</p>
+						</header>
+					</div>
+					<section className="modal-card-body">
+						<div className='content'>
+							<CountdownTimer targetDate={duration} total={getTime(new Date(duration))} />
+						</div>
+					</section>
+					<footer className="modal-card-foot">
+						<button className="button" onClick={this.closePopup}>Cancel</button>
+					</footer>
+				</div>
+			</div>;
 		}
 	}
 
@@ -158,41 +179,37 @@ export class Home extends Component {
 		if (teas.length > 0) {
 			images = teas.map(tea =>
 			(// TODO fix arrow function
-				<Col>
-					<Card key={tea.id} onClick={() => this.handleClick(tea.id)} style={{ cursor: "pointer" }}>
-						<CardBody>
-							<CardTitle tag="h3">{tea.name}</CardTitle>
-							<CardSubtitle tag="h5">{tea.temperature} C - {tea.duration}</CardSubtitle>
-							<CardText>{tea.description}</CardText>
-							<Button color="danger" onClick={(e) => this.handleDeleteClick(e, tea.id)}>Del</Button>
-						</CardBody>
-					</Card>
-				</Col>
+				<div className='card m-1' key={tea.id} >
+					<div className='card-content is-clickable' onClick={() => this.handleClick(tea.id)}>
+						<p className='title'>{tea.name}</p>
+						<p className='subtitle'>{tea.temperature} C - {tea.duration}</p>
+						<div className='content'>{tea.description}</div>
+					</div>
+					<footer className="card-footer">
+						<a className="card-footer-item has-text-primary" href="#">
+							<svg className="feather">
+								<use href="/feather-sprite.svg#edit" />
+							</svg>
+						</a>
+						<a className="card-footer-item has-text-danger" href="#" onClick={(e) => this.handleDeleteClick(e, tea.id)}>
+							<span className="icon">
+								<svg className="feather">
+									<use href="/feather-sprite.svg#trash" />
+								</svg>
+							</span>
+						</a>
+					</footer>
+				</div>
 			));
 		} else {
-			noImages = (<Card>
-				<CardBody>
-					<CardText>No teas</CardText>
-				</CardBody>
-			</Card>); 
-			// return 'not found' component if no images fetched
+			noImages = <div className='block is-size-1 is-align-self-flex-end' key="1">No teas</div>;
 		}
 
 		return (
-			<div className='teas-container'>
-				<Row className='row-cols-1 row-cols-md-4 row-cols-lg-8 g-1'>
-					<Col>
-						<Card color="primary" onClick={this.openSavePopup} style={{ cursor: "pointer" }}>
-							<CardBody>
-								<CardText>Add</CardText>
-							</CardBody>
-						</Card>
-					</Col>
-					{images}
+			<div className='is-flex is-flex-direction-row is-flex-wrap-wrap'>
+				{images}
 
-					{noImages}
-				</Row>
-
+				{noImages}
 			</div>
 		);
 	}
@@ -204,7 +221,7 @@ export class Home extends Component {
 			contents = <p><em>Loading...</em></p>
 		else {
 			contents =
-				<div>
+				<div className='container'>
 					{this.renderAddForm()}
 					{this.renderTimer(this.state.duration, this.state.tea)}
 					{this.renderteasTable(this.state.teas)}
@@ -213,6 +230,7 @@ export class Home extends Component {
 
 		return (
 			<div>
+				<NavBar onAddClick={this.openSavePopup}></NavBar>
 				{contents}
 			</div>
 		);

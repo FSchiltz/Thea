@@ -1,5 +1,4 @@
 import React from 'react';
-import { Progress } from 'reactstrap';
 import { useCountdown, getTime } from '../hooks/useCountdown';
 import './CountdownTimer.css';
 
@@ -36,7 +35,7 @@ const ShowCounter = ({ minutes, seconds, percent }) => {
 				<p>:</p>
 				<DateTimeDisplay value={seconds} type={'Seconds'} isDanger={false} />
 			</div>
-			<Progress value={percent}></Progress>
+			<progress  className="progress" max="100" value={percent}></progress>
 		</div>		
 	);
 };
