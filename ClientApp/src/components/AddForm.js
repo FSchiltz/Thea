@@ -56,30 +56,47 @@ export class AddForm extends Component {
 
                 <div className="field">
                     <label className='label'>Description</label>
-                    <input className='textarea' type="text" name="description" placeholder="Description" value={this.state.description} onChange={this.handleDescriptionChange} />
+                    <textarea className='textarea' type="text" name="description" placeholder="Description" value={this.state.description} onChange={this.handleDescriptionChange} />
                 </div>
 
-                <div className="field is-horizontal">
-                    <div className="field-label is-normal">
-                        <label className="label">Duration</label>
-                    </div>
-
-                    <div className="field-body">
-                        <div className='field'>
-                            <label className='label' >Minutes</label>
+                <div className='field'>
+                    <label className="label">Duration</label>
+                    <div className="field has-addons">
+                        <p class="control">
+                            <a class="button is-static">
+                                <span className="icon is-small is-left">
+                                    <svg className="feather">
+                                        <use href="/feather-sprite.svg#clock" />
+                                    </svg>
+                                </span>
+                            </a>
+                        </p>
+                        <div class="control">
                             <input className='input' type="number" name="durationMinutes" placeholder="2" value={this.state.durationMinutes} onChange={this.handleMinutesChange} />
+
                         </div>
-                        <div className='field'>
-                            <label className='label'>Seconds</label>
+                        <div class="control">
                             <input className='input' type="number" name="durationSeconds" placeholder="0" value={this.state.durationSeconds} onChange={this.handleSecondsChange} />
                         </div>
                     </div>
                 </div>
 
-                <div className="field">
-                    <label className='label'>Temperature</label>
-                    <input className='input' type="number" name="temperature" placeholder="90" value={this.state.temperature} onChange={this.handleTemperatureChange} />
-                </div>
+                <div className='field'>
+                    <label className='label' >Temperature</label>
+                    <div className="field has-addons">
+                        <p class="control">
+                            <a class="button is-static">
+                                <span className="icon is-small is-left">
+                                    <svg className="feather">
+                                        <use href="/feather-sprite.svg#thermometer" />
+                                    </svg>
+                                </span>
+                            </a>
+                        </p>
+                        <p className="control">
+                            <input className='input' type="number" name="temperature" placeholder="90 °C" value={this.state.temperature} onChange={this.handleTemperatureChange} />
+                        </p>
+                    </div></div>
             </form>
         );
     }
