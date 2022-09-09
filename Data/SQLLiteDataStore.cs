@@ -1,4 +1,3 @@
-using System.Data.Common;
 using Microsoft.Data.Sqlite;
 using Thea.Models;
 
@@ -111,6 +110,38 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         }
     }
 
+    public async Task DeleteTeaAsync(Guid id)
+    {
+        var connection = GetConnection();
+
+        await connection.OpenAsync();
+
+        var command = connection.CreateCommand();
+        command.CommandText = "DELETE FROM Tea WHERE id=$id;";
+        command.Parameters.AddWithValue("$id", id);
+
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public async Task UpdateTeaAsync(Tea tea)
+    {
+        using var connection = GetConnection();
+
+        await connection.OpenAsync();
+
+        var command = connection.CreateCommand();
+        command.CommandText = "UPDATE Tea SET id=$id, name=$name, description=$desc, duration=$duration, temperature=$temp) WHERE id=$id;";
+
+        command.Parameters.AddWithValue("$id", tea.Id);
+        command.Parameters.AddWithValue("$name", tea.Name);
+        command.Parameters.AddWithValue("$desc", tea.Description ?? "");
+        command.Parameters.AddWithValue("$temp", tea.Temperature);
+        command.Parameters.AddWithValue("$duration", tea.Duration);
+
+        await command.ExecuteNonQueryAsync();
+    }
+
+
     // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
     ~SQLLiteDataStore()
     {
@@ -123,18 +154,5 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
-    }
-
-    public async Task DeleteTeaAsync(Guid id)
-    { 
-         var connection = GetConnection();
-
-        await connection.OpenAsync();
-
-        var command = connection.CreateCommand();
-        command.CommandText = "DELETE FROM Tea WHERE id=$id;";
-        command.Parameters.AddWithValue("$id", id);
-
-        await command.ExecuteNonQueryAsync();
     }
 }

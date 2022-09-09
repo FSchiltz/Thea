@@ -33,8 +33,16 @@ public class TeaController : ControllerBase
         await _datastore.SaveTeaAsync(tea);
     }
 
+    [HttpPut]
+    public async Task PutAsync([FromBody] Tea tea)
+    {
+        _logger.LogInformation("New tea added");
+
+        await _datastore.UpdateTeaAsync(tea);
+    }
+
     [HttpGet("{id}")]
-    public async Task<Tea> GetTeaAsync([FromRoute] Guid id)
+    public async Task<Tea?> GetTeaAsync([FromRoute] Guid id)
     {
         _logger.LogInformation("Get tea {Id}", id);
 

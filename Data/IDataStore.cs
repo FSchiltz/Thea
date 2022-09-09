@@ -11,4 +11,5 @@ public interface IDataStore
 
     Task Init();
     Task DeleteTeaAsync(Guid id);
+    Task UpdateTeaAsync(Tea tea);
 }
