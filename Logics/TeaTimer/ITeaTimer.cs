@@ -1,6 +1,6 @@
 using Thea.Models;
 
-namespace Thea.TeaTimer;
+namespace Thea.Logics.TeaTimer;
 
 public interface ITeaTimer
 {

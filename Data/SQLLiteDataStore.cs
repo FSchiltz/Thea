@@ -1,4 +1,5 @@
 using Microsoft.Data.Sqlite;
+using Thea.Config;
 using Thea.Models;
 
 namespace Thea.Data;
@@ -8,8 +9,16 @@ public class SQLLiteDataStore : IDataStore, IDisposable
 {
     private SqliteConnection? _connection;
     private bool disposedValue;
+    private readonly StorageConfig config;
 
-    protected SqliteConnection GetConnection() => _connection ??= new SqliteConnection("Data Source=tea.db");
+    private const string DEFAULTPATH = "storage/db/tea.db";
+
+    public SQLLiteDataStore(StorageConfig config)
+    {
+        this.config = config;
+    }
+
+    protected SqliteConnection GetConnection() => _connection ??= new SqliteConnection("Data Source=" + config.Path ?? DEFAULTPATH);
 
     private Tea ReadTea(SqliteDataReader reader)
     {

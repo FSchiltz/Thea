@@ -1,7 +1,8 @@
 using System.Timers;
 using Thea.Models;
+using Thea.Logics.Notifications;
 
-namespace Thea.TeaTimer;
+namespace Thea.Logics.TeaTimer;
 
 public class ServiceTimer : ITeaTimer
 {

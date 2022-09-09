@@ -1,28 +1,26 @@
 using Thea.Config;
 using Thea.Data;
-using Thea.TeaTimer;
+using Thea.Logics.TeaTimer;
+using Thea.Logics.Notifications;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-using var store = new SQLLiteDataStore();
-builder.Services.AddSingleton<IDataStore>(store);
+builder.Services.Configure<MQTTConfig>(builder.Configuration.GetSection("MQTT"));
+builder.Services.Configure<StorageConfig>(builder.Configuration.GetSection("Storage"));
 
 // background timer
 builder.Services.AddSingleton<ITeaTimer, ServiceTimer>();
 
 // notifications services
-builder.Services.AddTransient<INotifyer, MQTTTimer>();
-builder.Services.AddTransient<INotifyer, ConsoleTimer>();
+builder.Services.AddTransient<INotifyer, MQTTNotifyer>();
 // TODO add more notification type
 
-builder.Services.Configure<MQTTConfig>(builder.Configuration.GetSection("MQTT"));
+builder.Services.AddSingleton<IDataStore>(StorageFactory.Build);
 
 var app = builder.Build();
-
-await store.Init();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -35,6 +33,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+await app.Services.GetService<IDataStore>()?.Init();
 
 app.MapControllerRoute(
     name: "default",

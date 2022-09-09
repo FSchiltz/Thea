@@ -1,6 +1,6 @@
 using Thea.Models;
 
-namespace Thea.TeaTimer;
+namespace Thea.Logics.Notifications;
 
 public interface INotifyer
 {

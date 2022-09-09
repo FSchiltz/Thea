@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Thea.Data;
-using Thea.TeaTimer;
+using Thea.Logics.TeaTimer;
 
 namespace Thea.Controllers;
 
