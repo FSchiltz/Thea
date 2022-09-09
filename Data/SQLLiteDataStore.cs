@@ -130,7 +130,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = "UPDATE Tea SET id=$id, name=$name, description=$desc, duration=$duration, temperature=$temp) WHERE id=$id;";
+        command.CommandText = "UPDATE Tea SET id=$id, name=$name, description=$desc, duration=$duration, temperature=$temp WHERE id=$id;";
 
         command.Parameters.AddWithValue("$id", tea.Id);
         command.Parameters.AddWithValue("$name", tea.Name);

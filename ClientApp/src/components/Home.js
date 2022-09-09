@@ -7,16 +7,24 @@ import { NavBar } from './NavBar';
 export class Home extends Component {
 	constructor(props) {
 		super(props);
-		this.state = { teas: [], loading: true, duration: null, tea: null, timerOn: false, newTea: {} };
+		this.state = {
+			teas: [], loading: true, duration: null, tea: null,
+			timerOn: false,
+			edit: false,
+			add: false,
+			newTea: {}
+		};
 
 		// This binding is necessary to make `this` work in the callback 
 		this.handleClick = this.handleClick.bind(this);
 		this.handleDeleteClick = this.handleDeleteClick.bind(this);
 		this.openSavePopup = this.openSavePopup.bind(this);
+		this.openEditPopup = this.openEditPopup.bind(this);
 		this.closePopup = this.closePopup.bind(this);
 		this.closeAddPopup = this.closeAddPopup.bind(this);
 		this.saveNewTea = this.saveNewTea.bind(this);
 		this.formChanged = this.formChanged.bind(this);
+		this.notifyDone = this.notifyDone.bind(this);
 	}
 
 	componentDidMount() {
@@ -24,11 +32,13 @@ export class Home extends Component {
 	}
 
 	handleClick(e) {
+		this.startNotify();
 		this.selectTea(e);
 	}
 
 	handleDeleteClick(e, id) {
 		e.preventDefault();
+
 		this.deleteTea(id);
 	}
 
@@ -37,11 +47,20 @@ export class Home extends Component {
 	}
 
 	openSavePopup() {
-		this.setState({ edit: true });
+		const newTea = this.state.newTea;
+		newTea.id = null;
+		this.setState({ add: true, edit: false, newTea: newTea });
+	}
+
+	async openEditPopup(e, id) {
+		e.preventDefault();
+
+		const newTea = await this.getTea(id);
+		this.setState({ add: false, edit: true, newTea: newTea });
 	}
 
 	closeAddPopup() {
-		this.setState({ edit: false });
+		this.setState({ edit: false, add: false });
 	}
 
 	formChanged(event) {
@@ -50,17 +69,37 @@ export class Home extends Component {
 		console.log(event);
 	}
 
+	startNotify() {
+		if (!("Notification" in window)) {
+			// Check if the browser supports notifications
+		} else if (Notification.permission === "granted") {
+			// Check whether notification permissions have already been granted;
+
+		} else if (Notification.permission !== "denied") {
+			// We need to ask the user for permission
+			Notification.requestPermission().then((permission) => {
+				// If the user accepts, let's create a notification
+				if (permission === "granted") {
+				}
+			});
+		}
+	}
+
 	async deleteTea(teaId) {
 		await fetch('/api/tea/' + teaId, { method: 'DELETE' });
-
+		
 		console.log('Tea deleted');
 
 		await this.populateteasData();
 	}
 
+	async getTea(id) {
+		const response = await fetch('/api/tea/' + id);
+		return await response.json();
+	}
+
 	async selectTea(teaId) {
-		const response = await fetch('/api/tea/' + teaId);
-		const data = await response.json();
+		const data = await this.getTea(teaId);
 
 		var date = data.duration.split(':');
 		const minutes = parseInt(date[1]);
@@ -104,6 +143,7 @@ export class Home extends Component {
 			seconds = 0;
 
 		const tea = {
+			id: this.state.newTea.id,
 			name: this.state.newTea.name,
 			description: this.state.newTea.description,
 			temperature: this.state.newTea.temperature,
@@ -122,8 +162,8 @@ export class Home extends Component {
 	}
 
 	renderAddForm() {
-		if (this.state.edit) {
-			const active = this.state.edit ? "is-active" : "";
+		if (this.state.edit || this.state.add) {
+			const active = "is-active";
 
 			return <div className={`modal ${active}`}>
 				<div className="modal-background"></div>
@@ -136,7 +176,7 @@ export class Home extends Component {
 					<section className="modal-card-body">
 						<AddForm onChange={this.formChanged} name={this.state.newTea.name} description={this.state.newTea.description}
 							temperature={this.state.newTea.temperature} durationMinutes={this.state.newTea.durationMinutes}
-							durationSeconds={this.state.newTea.durationSeconds}></AddForm>
+							durationSeconds={this.state.newTea.durationSeconds} id={this.state.newTea.id}></AddForm>
 					</section>
 					<footer className="modal-card-foot">
 						<button className="button is-success" onClick={this.saveNewTea}>Save changes</button>
@@ -144,6 +184,14 @@ export class Home extends Component {
 					</footer>
 				</div>
 			</div>
+		}
+	}
+
+	notifyDone() {
+		if (Notification.permission === "granted") {
+			// Check whether notification permissions have already been granted;
+			// if so, create a notification
+			new Notification("Tea ready !");
 		}
 	}
 
@@ -161,7 +209,7 @@ export class Home extends Component {
 					</div>
 					<section className="modal-card-body">
 						<div className='content'>
-							<CountdownTimer targetDate={duration} total={getTime(new Date(duration))} />
+							<CountdownTimer targetDate={duration} total={getTime(new Date(duration))} callback={this.notifyDone} />
 						</div>
 					</section>
 					<footer className="modal-card-foot">
@@ -186,7 +234,7 @@ export class Home extends Component {
 						<div className='content'>{tea.description}</div>
 					</div>
 					<footer className="card-footer">
-						<a className="card-footer-item has-text-primary" href="#">
+						<a className="card-footer-item has-text-primary" href="#" onClick={(e) => this.openEditPopup(e, tea.id)}>
 							<svg className="feather">
 								<use href="/feather-sprite.svg#edit" />
 							</svg>

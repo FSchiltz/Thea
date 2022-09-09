@@ -1,12 +1,14 @@
 import React from 'react';
-import { useCountdown, getTime } from '../hooks/useCountdown';
+import { useCountdown } from '../hooks/useCountdown';
 import './CountdownTimer.css';
 
-const CountdownTimer = ({ targetDate, total }) => {
+const CountdownTimer = ({ targetDate, total, callback }) => {
 
 	const [minutes, seconds, percent] = useCountdown(targetDate, total);
 
 	if (minutes + seconds <= 0) {
+		if (callback)
+			callback();
 		return <ExpiredNotice />;
 	} else {
 		return (
@@ -30,13 +32,13 @@ const ExpiredNotice = () => {
 const ShowCounter = ({ minutes, seconds, percent }) => {
 	return (
 		<div>
-			<div className="countdown-link">			
+			<div className="countdown-link">
 				<DateTimeDisplay value={minutes} type={'Mins'} isDanger={false} />
 				<p>:</p>
 				<DateTimeDisplay value={seconds} type={'Seconds'} isDanger={false} />
 			</div>
-			<progress  className="progress" max="100" value={percent}></progress>
-		</div>		
+			<progress className="progress" max="100" value={percent}></progress>
+		</div>
 	);
 };
 

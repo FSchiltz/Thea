@@ -30,15 +30,10 @@ public class TeaController : ControllerBase
     {
         _logger.LogInformation("New tea added");
 
-        await _datastore.SaveTeaAsync(tea);
-    }
-
-    [HttpPut]
-    public async Task PutAsync([FromBody] Tea tea)
-    {
-        _logger.LogInformation("New tea added");
-
-        await _datastore.UpdateTeaAsync(tea);
+        if (tea.Id != Guid.Empty)
+            await _datastore.UpdateTeaAsync(tea);
+        else
+            await _datastore.SaveTeaAsync(tea);
     }
 
     [HttpGet("{id}")]
