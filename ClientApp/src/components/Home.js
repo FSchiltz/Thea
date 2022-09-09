@@ -138,10 +138,14 @@ export class Home extends Component {
 		if (!seconds)
 			seconds = 0;
 
+		let temperature = parseInt(this.state.newTea.temperature);
+		if (!temperature)
+			temperature = 0;
+
 		const tea = {
 			name: this.state.newTea.name,
 			description: this.state.newTea.description,
-			temperature: this.state.newTea.temperature,
+			temperature: temperature,
 			duration: createDuration(minutes, seconds),
 		};
 

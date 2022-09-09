@@ -5,6 +5,6 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./storage/:/app/storage/
+      - ./storage/docker/:/app/storage/
     env_file:
       - .env
