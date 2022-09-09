@@ -11,11 +11,13 @@ const CountdownTimer = ({ targetDate, total, callback }) => {
 			callback();
 		return <ExpiredNotice />;
 	} else {
+		const isDanger = minutes + seconds <= 10;
 		return (
 			<ShowCounter
 				minutes={minutes}
 				seconds={seconds}
 				percent={percent}
+				isDanger={isDanger}
 			/>
 		);
 	}
@@ -29,26 +31,25 @@ const ExpiredNotice = () => {
 	);
 };
 
-const ShowCounter = ({ minutes, seconds, percent }) => {
+const ShowCounter = ({ minutes, seconds, percent, isDanger }) => {
 	return (
 		<div>
 			<div className="countdown-link">
-				<DateTimeDisplay value={minutes} type={'Mins'} isDanger={false} />
-				<p>:</p>
-				<DateTimeDisplay value={seconds} type={'Seconds'} isDanger={false} />
+				<DateTimeDisplay value={minutes} isDanger={isDanger} />
+				<span>:</span>
+				<DateTimeDisplay value={seconds} isDanger={isDanger} />
 			</div>
-			<progress className="progress" max="100" value={percent}></progress>
+			<progress className={isDanger ? 'progress is-danger' : 'progress is-primary'} max="100" value={percent}></progress>
 		</div>
 	);
 };
 
 
-const DateTimeDisplay = ({ value, type, isDanger }) => {
+const DateTimeDisplay = ({ value, isDanger }) => {
 	return (
-		<div className={isDanger ? 'countdown danger' : 'countdown'}>
-			<p>{value}</p>
-			<span>{type}</span>
-		</div>
+		<span className={isDanger ? 'countdown danger' : 'countdown'}>
+			{value}
+		</span>
 	);
 };
 
