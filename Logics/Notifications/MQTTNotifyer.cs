@@ -30,15 +30,21 @@ public class MQTTNotifyer : INotifyer
             .WithCredentials(_config.Username, _config.Password)
             .Build();
 
-        await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
+        var result = await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
+        if (result == null || result.ResultCode != 0)
+            _logger.LogError("MQTT connection error: {code}", result?.ResultCode);
 
-        var applicationMessage = new MqttApplicationMessageBuilder()
-            .WithTopic(_config.Topic ?? DEFAULTTOPIC)
-            .WithPayload("Done")
-            .Build();
+        else
+        {
+            _logger.LogInformation("Connected to mqtt");
+            var applicationMessage = new MqttApplicationMessageBuilder()
+                .WithTopic(_config.Topic ?? DEFAULTTOPIC)
+                .WithPayload("Done")
+                .Build();
 
-        await mqttClient.PublishAsync(applicationMessage, CancellationToken.None);
+            await mqttClient.PublishAsync(applicationMessage, CancellationToken.None);
 
-        _logger.LogInformation("MQTT application message is published to {host}.", _config.Host);
+            _logger.LogInformation("MQTT application message is published to {host}.", _config.Host);
+        }
     }
 }
