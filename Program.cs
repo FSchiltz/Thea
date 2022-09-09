@@ -1,3 +1,4 @@
+using Thea.Config;
 using Thea.Data;
 using Thea.TeaTimer;
 
@@ -17,6 +18,7 @@ builder.Services.AddTransient<INotifyer, MQTTTimer>();
 builder.Services.AddTransient<INotifyer, ConsoleTimer>();
 // TODO add more notification type
 
+builder.Services.Configure<MQTTConfig>(builder.Configuration.GetSection("MQTT"));
 
 var app = builder.Build();
 

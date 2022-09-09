@@ -4,5 +4,5 @@ namespace Thea.TeaTimer;
 
 public interface INotifyer
 {
-    public void Notify(Tea? sender);
+    public Task Notify(Tea? sender);
 }
