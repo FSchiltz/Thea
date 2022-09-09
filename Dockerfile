@@ -1,8 +1,8 @@
-FROM node:alpine AS node_base
-
 # https://hub.docker.com/_/microsoft-dotnet
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-COPY --from=node_base . .
+
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y nodejs
 WORKDIR /source
 
 # copy everything else and build app

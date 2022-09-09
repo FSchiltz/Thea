@@ -11,4 +11,8 @@ public class MQTTConfig
 
     public string? Topic { get; set; }
 
+    public override string ToString()
+    {
+        return $"MQTT: {Username}@{Host}:{Port}";
+    }
 }

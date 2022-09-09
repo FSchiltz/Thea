@@ -9,15 +9,18 @@ public class FileDataStore : IDataStore
     private readonly StorageConfig config;
     private readonly string _path;
     private readonly string _teaPath;
+    private readonly ILogger<FileDataStore> _logger;
     private const string DEFAULTPATH = "storage/files/";
     private const string TEAPATH = "teas/";
     private const string TEAFILENAME = "tea_";
 
-    public FileDataStore(StorageConfig config)
+    public FileDataStore(StorageConfig config, ILogger<FileDataStore> logger)
     {
         this.config = config;
         _path = config.Path ?? DEFAULTPATH;
         _teaPath = Path.Combine(_path, TEAPATH);
+
+        _logger = logger;
     }
 
     public Task DeleteTeaAsync(Guid id)
@@ -73,6 +76,7 @@ public class FileDataStore : IDataStore
         if (!Directory.Exists(_teaPath))
             Directory.CreateDirectory(_teaPath);
 
+        _logger.LogInformation("Init file storage with {Config}", config);
         return Task.CompletedTask;
     }
 

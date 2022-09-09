@@ -12,10 +12,11 @@ public static class StorageFactory
         switch (config.Type?.ToUpper())
         {
             case "FILE":
-                return new FileDataStore(config);
+                return new FileDataStore(config, services.GetService<ILogger<FileDataStore>>());
             case "SQLLITE":
             case null:
-                return new SQLLiteDataStore(config);
+            case "":
+                return new SQLLiteDataStore(config, services.GetService<ILogger<SQLLiteDataStore>>());
             default:
                 throw new NotSupportedException();
         }
