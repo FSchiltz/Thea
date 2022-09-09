@@ -6,3 +6,5 @@ services:
       - "80:80"
     volumes:
       - ./storage/:/app/storage/
+    env_file:
+      - .env

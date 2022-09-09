@@ -13,6 +13,6 @@ public class MQTTConfig
 
     public override string ToString()
     {
-        return $"MQTT: {Username}@{Host}:{Port}";
+        return $"MQTT: {Username}@{Host}:{Port} to {Topic}";
     }
 }
