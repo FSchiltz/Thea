@@ -62,8 +62,8 @@ export class AddForm extends Component {
                 <div className='field'>
                     <label className="label">Duration</label>
                     <div className="field has-addons">
-                        <p class="control">
-                            <a class="button is-static">
+                        <p className="control">
+                            <a className="button is-static">
                                 <span className="icon is-small is-left">
                                     <svg className="feather">
                                         <use href="/feather-sprite.svg#clock" />
@@ -71,11 +71,11 @@ export class AddForm extends Component {
                                 </span>
                             </a>
                         </p>
-                        <div class="control">
+                        <div className="control">
                             <input className='input' type="number" name="durationMinutes" placeholder="2" value={this.state.durationMinutes} onChange={this.handleMinutesChange} />
 
                         </div>
-                        <div class="control">
+                        <div className="control">
                             <input className='input' type="number" name="durationSeconds" placeholder="0" value={this.state.durationSeconds} onChange={this.handleSecondsChange} />
                         </div>
                     </div>
@@ -84,8 +84,8 @@ export class AddForm extends Component {
                 <div className='field'>
                     <label className='label' >Temperature</label>
                     <div className="field has-addons">
-                        <p class="control">
-                            <a class="button is-static">
+                        <p className="control">
+                            <a className="button is-static">
                                 <span className="icon is-small is-left">
                                     <svg className="feather">
                                         <use href="/feather-sprite.svg#thermometer" />

@@ -31,13 +31,13 @@ const ExpiredNotice = () => {
 	);
 };
 
-const ShowCounter = ({ minutes, seconds, percent, isDanger }) => {
+const ShowCounter = ({ minutes, seconds, millis, percent, isDanger }) => {
 	return (
 		<div>
 			<div className="countdown-link">
-				<DateTimeDisplay value={minutes} isDanger={isDanger} />
+				<DateTimeDisplay value={String(minutes).padStart(2, '0')} isDanger={isDanger} />
 				<span>:</span>
-				<DateTimeDisplay value={seconds} isDanger={isDanger} />
+				<DateTimeDisplay value={String(seconds).padStart(2, '0')} isDanger={isDanger} />
 			</div>
 			<progress className={isDanger ? 'progress is-danger' : 'progress is-primary'} max="100" value={percent}></progress>
 		</div>

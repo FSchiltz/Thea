@@ -10,7 +10,7 @@ const useCountdown = (targetDate, total) => {
 	useEffect(() => {
 		const interval = setInterval(() => {
 			setCountDown(getTime(countDownDate));
-		}, 1000);
+		}, 50);
 
 		return () => clearInterval(interval);
 	}, [countDownDate]);
@@ -19,15 +19,22 @@ const useCountdown = (targetDate, total) => {
 };
 
 const getReturnValues = (countDown, total) => {
+	if (countDown < 0)
+		return [0, 0, 0];
+
 	// calculate time left
 	const minutes = Math.floor((countDown % (1000 * 60 * 60)) / (1000 * 60));
 	const seconds = Math.floor((countDown % (1000 * 60)) / 1000);
 
-	return [minutes, seconds, (countDown / total * 100)];
+	const percent = (countDown / total * 100);
+
+	console.log('percent: ' + percent + ' (' + countDown + '/' + total + ')');
+
+	return [minutes, seconds, percent];
 };
 
 const getTime = (targetDate) => {
 	return targetDate.getTime() - new Date().getTime()
 };
 
-export { useCountdown , getTime};
+export { useCountdown, getTime };
