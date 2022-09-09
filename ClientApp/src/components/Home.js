@@ -4,6 +4,7 @@ import { getTime } from '../hooks/useCountdown';
 import { AddForm } from './AddForm';
 import { NavBar } from './NavBar';
 import { createDuration, deconstructDuration, formatDuration } from '../helpers/Format';
+import { askNotifyPermission } from '../helpers/Notify';
 
 export class Home extends Component {
 	constructor(props) {
@@ -13,6 +14,7 @@ export class Home extends Component {
 			timerOn: false,
 			edit: false,
 			add: false,
+			notify: false,
 			newTea: {}
 		};
 
@@ -26,6 +28,7 @@ export class Home extends Component {
 		this.saveNewTea = this.saveNewTea.bind(this);
 		this.formChanged = this.formChanged.bind(this);
 		this.notifyDone = this.notifyDone.bind(this);
+		this.onNotifyChanged = this.onNotifyChanged.bind(this);
 	}
 
 	componentDidMount() {
@@ -33,7 +36,7 @@ export class Home extends Component {
 	}
 
 	handleClick(e) {
-		this.startNotify();
+		askNotifyPermission();
 		this.selectTea(e);
 	}
 
@@ -45,6 +48,10 @@ export class Home extends Component {
 
 	closePopup() {
 		this.closeTimer();
+	}
+
+	onNotifyChanged(notify) {
+		this.setState({ notify: notify });
 	}
 
 	openSavePopup() {
@@ -74,22 +81,6 @@ export class Home extends Component {
 		this.setState({ newTea: event });
 		console.log('Form updated');
 		console.log(event);
-	}
-
-	startNotify() {
-		if (!("Notification" in window)) {
-			// Check if the browser supports notifications
-		} else if (Notification.permission === "granted") {
-			// Check whether notification permissions have already been granted;
-
-		} else if (Notification.permission !== "denied") {
-			// We need to ask the user for permission
-			Notification.requestPermission().then((permission) => {
-				// If the user accepts, let's create a notification
-				if (permission === "granted") {
-				}
-			});
-		}
 	}
 
 	async deleteTea(teaId) {
@@ -195,8 +186,7 @@ export class Home extends Component {
 	}
 
 	notifyDone() {
-		if (Notification.permission === "granted") {
-			// Check whether notification permissions have already been granted;
+		if (this.state.notify) {
 			// if so, create a notification
 			new Notification("Tea ready !");
 		}
@@ -237,7 +227,7 @@ export class Home extends Component {
 				<div className='card m-1' key={tea.id} >
 					<div className='card-content is-clickable' onClick={() => this.handleClick(tea.id)}>
 						<p className='title'>{tea.name}</p>
-						<div className='level'>
+						<div className='level is-mobile'>
 							<div className='level-left'>
 								<div className='level-item'>
 									<div className='box icon-text'>
@@ -309,7 +299,7 @@ export class Home extends Component {
 
 		return (
 			<div>
-				<NavBar onAddClick={this.openSavePopup}></NavBar>
+				<NavBar onAddClick={this.openSavePopup} notify={this.state.notify} onNotifyChanged={this.onNotifyChanged}></NavBar>
 				{contents}
 			</div>
 		);
