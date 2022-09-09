@@ -32,7 +32,7 @@ public class MQTTNotifyer : INotifyer
             .WithCredentials(_config.Username, _config.Password)
             .Build();
 
-        logger.LogDebug("MqttInfo: {host} {port} {username} {password} {topic}", _config.Host, _config.Port, _config.Username,_config.Password, _config.Topic);
+        logger.LogInformation("MqttInfo: {host} {port} {username} {password} {topic}", _config.Host, _config.Port, _config.Username,_config.Password, _config.Topic);
         try
         {
             var result = await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
