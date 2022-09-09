@@ -3,7 +3,7 @@ import CountdownTimer from './CountdownTimer';
 import { getTime } from '../hooks/useCountdown';
 import { AddForm } from './AddForm';
 import { NavBar } from './NavBar';
-import { createDuration, formatDuration } from '../helpers/Format';
+import { createDuration, deconstructDuration, formatDuration } from '../helpers/Format';
 
 export class Home extends Component {
 	constructor(props) {
@@ -57,6 +57,12 @@ export class Home extends Component {
 		e.preventDefault();
 
 		const newTea = await this.getTea(id);
+
+		const [minutes, seconds] = deconstructDuration(newTea.duration);
+		newTea.durationMinutes = minutes;
+		newTea.durationSeconds = seconds;
+		newTea.duration = null;
+
 		this.setState({ add: false, edit: true, newTea: newTea });
 	}
 
@@ -102,9 +108,7 @@ export class Home extends Component {
 	async selectTea(teaId) {
 		const data = await this.getTea(teaId);
 
-		var date = data.duration.split(':');
-		const minutes = parseInt(date[1]);
-		const seconds = parseInt(date[2]);
+		const [minutes, seconds] = deconstructDuration(data.duration);
 
 		const duration = new Date();
 		duration.setSeconds((minutes * 60) + seconds + duration.getSeconds());
@@ -144,12 +148,14 @@ export class Home extends Component {
 			seconds = 0;
 
 		const tea = {
-			id: this.state.newTea.id,
 			name: this.state.newTea.name,
 			description: this.state.newTea.description,
 			temperature: this.state.newTea.temperature,
 			duration: createDuration(minutes, seconds),
 		};
+
+		if (this.state.newTea.id)
+			tea.id = this.state.newTea.id;
 
 		await fetch('/api/tea/', {
 			method: 'POST',
@@ -234,8 +240,8 @@ export class Home extends Component {
 						<div className='level'>
 							<div className='level-left'>
 								<div className='level-item'>
-									<div className='box'>
-										<span className="icon is-small">
+									<div className='box icon-text'>
+										<span className="icon">
 											<svg className="feather">
 												<use href="/feather-sprite.svg#thermometer" />
 											</svg>
@@ -244,8 +250,8 @@ export class Home extends Component {
 									</div>
 								</div>
 								<div className='level-item'>
-									<div className='box'>
-										<span className="icon is-small">
+									<div className='box icon-text'>
+										<span className="icon">
 											<svg className="feather">
 												<use href="/feather-sprite.svg#clock" />
 											</svg>
@@ -294,7 +300,7 @@ export class Home extends Component {
 			contents = <p><em>Loading...</em></p>
 		else {
 			contents =
-				<div className='container'>
+				<div>
 					{this.renderAddForm()}
 					{this.renderTimer(this.state.duration, this.state.tea)}
 					{this.renderteasTable(this.state.teas)}

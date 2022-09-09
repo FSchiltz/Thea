@@ -4,7 +4,7 @@ export class Layout extends Component {
 	render() {
 		return (
 			<section className="section">
-				<div className="container">
+				<div className="container is-fluid">
 					{this.props.children}
 				</div>
 			</section>
