@@ -32,11 +32,11 @@ export class NavBar extends Component {
     render() {
         return (
             <div>
-                <nav className="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+                <nav className="navbar is-fixed-top has-shadow" role="navigation" aria-label="main navigation">
                     <div className="navbar-brand">
                         <div className="navbar-item">
                             <img src="/logo.png" alt="Thea" />
-                            <p className='ml-2 is-size-4'>Thea</p>
+                            <p className='ml-2 is-size-3'>Thea</p>
                         </div>
 
                         <div className="navbar-item ml-4">
