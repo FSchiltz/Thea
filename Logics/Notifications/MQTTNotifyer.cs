@@ -30,23 +30,33 @@ public class MQTTNotifyer : INotifyer
         var mqttClientOptions = new MqttClientOptionsBuilder()
             .WithTcpServer(_config.Host, _config.Port)
             .WithCredentials(_config.Username, _config.Password)
-            .WithTimeout(new TimeSpan(0, 0, 30))
             .Build();
 
-        var result = await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
-        if (result == null || result.ResultCode != 0)
-            logger.LogError("MQTT connection error: {code}", result?.ResultCode);
-        else
+        logger.LogInformation("MqttInfo: {host} {port} {username} {topic}", _config.Host, _config.Port, _config.Username, _config.Topic);
+        try
         {
-            logger.LogInformation("Connected to mqtt");
-            var applicationMessage = new MqttApplicationMessageBuilder()
-                .WithTopic(_config.Topic ?? DEFAULTTOPIC)
-                .WithPayload("Done")
-                .Build();
+            var result = await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
 
-            await mqttClient.PublishAsync(applicationMessage, CancellationToken.None);
+            logger.LogInformation("Done connecting");
 
-            logger.LogInformation("MQTT application message is published to {host}.", _config.Host);
+            if (result == null || result.ResultCode != 0)
+                logger.LogError("MQTT connection error: {code}", result?.ResultCode);
+            else
+            {
+                logger.LogInformation("Connected to mqtt");
+                var applicationMessage = new MqttApplicationMessageBuilder()
+                    .WithTopic(_config.Topic ?? DEFAULTTOPIC)
+                    .WithPayload("Done")
+                    .Build();
+
+                await mqttClient.PublishAsync(applicationMessage, CancellationToken.None);
+
+                logger.LogInformation("MQTT application message is published to {host}.", _config.Host);
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("Error Mqtt", ex);
         }
     }
 }
