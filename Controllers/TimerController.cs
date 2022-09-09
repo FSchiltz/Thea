@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Thea.Models;
+using Thea.Data;
+using Thea.TeaTimer;
 
 namespace Thea.Controllers;
 
@@ -8,10 +9,14 @@ namespace Thea.Controllers;
 public class TimerController : ControllerBase
 {
     private readonly ILogger<TimerController> _logger;
+    private readonly IDataStore _datastore;
+    private readonly ITeaTimer _timer;
 
-    public TimerController(ILogger<TimerController> logger)
+    public TimerController(IDataStore datastore, ITeaTimer timer, ILogger<TimerController> logger)
     {
         _logger = logger;
+        _datastore = datastore;
+        _timer = timer;
     }
 
     [HttpGet]
@@ -19,26 +24,30 @@ public class TimerController : ControllerBase
     {
         _logger.LogInformation("Get running timer");
 
-        return false;
+        return _timer.Running();
     }
 
     [HttpPost("{id}")]
-    public Guid PostTimer([FromRoute] Guid id)
+    public async Task<Guid> PostTimer([FromRoute] Guid id)
     {
         // get duration from db
+        var tea = await _datastore.GetTeaAsync(id);
+
+        if (tea == null)
+            return Guid.Empty;
 
         // Start background timer
         _logger.LogInformation("Timer started");
 
-        return Guid.NewGuid();
+        return _timer.Run(tea, tea.Duration);
     }
 
     [HttpDelete("{id}")]
     public void DeleteTimer([FromRoute] Guid id)
     {
         // Cancel running timer
+        _timer.Cancel(id);
 
         _logger.LogInformation("Timer stopped");
     }
-
 }

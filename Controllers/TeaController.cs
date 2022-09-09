@@ -36,7 +36,7 @@ public class TeaController : ControllerBase
             await _datastore.SaveTeaAsync(tea);
     }
 
-    [HttpPost]
+    [HttpPost("Order")]
     public async Task PostOrderAsync([FromBody] IEnumerable<(Guid id, int order)> orders)
     {
         _logger.LogInformation("Order changed");

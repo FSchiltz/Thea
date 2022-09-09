@@ -1,13 +1,22 @@
 using Thea.Data;
+using Thea.TeaTimer;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllersWithViews();
 
 using var store = new SQLLiteDataStore();
 builder.Services.AddSingleton<IDataStore>(store);
+
+// background timer
+builder.Services.AddSingleton<ITeaTimer, ServiceTimer>();
+
+// notifications services
+builder.Services.AddTransient<INotifyer, MQTTTimer>();
+builder.Services.AddTransient<INotifyer, ConsoleTimer>();
+// TODO add more notification type
+
 
 var app = builder.Build();
 

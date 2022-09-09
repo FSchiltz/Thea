@@ -15,10 +15,10 @@ public class SQLLiteDataStore : IDataStore, IDisposable
     {
         return new Tea(reader.GetGuid(0), reader.GetString(1))
         {
-            Description = reader.GetString(2),
-            Duration = reader.GetTimeSpan(3),
-            Temperature = reader.GetInt32(4),
-            Order = reader.GetInt32(5),
+            Description = reader.IsDBNull(2) ? null : reader.GetString(2),
+            Duration = reader.IsDBNull(3) ? new TimeSpan() : reader.GetTimeSpan(3),
+            Temperature = reader.IsDBNull(4) ? 0 : reader.GetInt32(4),
+            Order = reader.IsDBNull(5) ? 0 : reader.GetInt32(5),
         };
     }
 
@@ -30,7 +30,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = "CREATE TABLE IF NOT EXISTS Tea (id varchar(30), name varchar(20), description varchar(200), duration varchar(50), temperature int);";
+        command.CommandText = "CREATE TABLE IF NOT EXISTS Tea (id varchar(30), name varchar(20), description varchar(200), duration varchar(50), temperature int, display int);";
 
         await command.ExecuteNonQueryAsync();
     }
@@ -42,7 +42,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = "SELECT id, name, description, duration, temperature, order FROM Tea WHERE id=$id;";
+        command.CommandText = "SELECT id, name, description, duration, temperature, display FROM Tea WHERE id=$id;";
         command.Parameters.AddWithValue("$id", id);
 
         using var reader = await command.ExecuteReaderAsync();
@@ -62,7 +62,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = "SELECT id, name, description, duration, temperature, order FROM Tea;";
+        command.CommandText = "SELECT id, name, description, duration, temperature, display FROM Tea;";
 
         using var reader = await command.ExecuteReaderAsync();
 
@@ -166,10 +166,10 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         foreach (var order in orders)
         {
             var command = connection.CreateCommand();
-            command.CommandText = "UPDATE Tea SET order=$order WHERE id=$id;";
+            command.CommandText = "UPDATE Tea SET display=$display WHERE id=$id;";
 
             command.Parameters.AddWithValue("$id", order.id);
-            command.Parameters.AddWithValue("$order", order.order);
+            command.Parameters.AddWithValue("$display", order.order);
 
             await command.ExecuteNonQueryAsync();
         }
