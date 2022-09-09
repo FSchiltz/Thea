@@ -46,7 +46,7 @@ public class MQTTNotifyer : INotifyer
 
             await mqttClient.PublishAsync(applicationMessage, CancellationToken.None);
 
-            _logger.LogInformation("MQTT application message is published to {host}.", _config.Host);
+            logger.LogInformation("MQTT application message is published to {host}.", _config.Host);
         }
     }
 }
