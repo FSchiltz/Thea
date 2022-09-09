@@ -11,16 +11,18 @@ public class MQTTNotifyer : INotifyer
     private const string DEFAULTTOPIC = "Thea/Tea";
     public MQTTNotifyer(IServiceProvider services, IOptions<MQTTConfig> config, ILogger<MQTTNotifyer> logger)
     {
-        _logger = logger;
         _config = config.Value;
-        _logger.LogInformation("Using MQTT with {config}", config.Value);
+        _services = services;
+        logger.LogInformation("Using MQTT with {config}", config.Value);
     }
 
-    private readonly ILogger<MQTTNotifyer> _logger;
+    private readonly IServiceProvider _services;
     private readonly MQTTConfig _config;
 
     public async Task Notify(Tea? sender)
     {
+        using var scope = _services.CreateAsyncScope();
+        var logger = scope.ServiceProvider.GetService<ILogger<MQTTNotifyer>>();
         var mqttFactory = new MqttFactory();
 
         using var mqttClient = mqttFactory.CreateMqttClient();
@@ -28,15 +30,15 @@ public class MQTTNotifyer : INotifyer
         var mqttClientOptions = new MqttClientOptionsBuilder()
             .WithTcpServer(_config.Host, _config.Port)
             .WithCredentials(_config.Username, _config.Password)
+            .WithTimeout(new TimeSpan(0, 0, 30))
             .Build();
 
         var result = await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
         if (result == null || result.ResultCode != 0)
-            _logger.LogError("MQTT connection error: {code}", result?.ResultCode);
-
+            logger.LogError("MQTT connection error: {code}", result?.ResultCode);
         else
         {
-            _logger.LogInformation("Connected to mqtt");
+            logger.LogInformation("Connected to mqtt");
             var applicationMessage = new MqttApplicationMessageBuilder()
                 .WithTopic(_config.Topic ?? DEFAULTTOPIC)
                 .WithPayload("Done")
