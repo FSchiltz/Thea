@@ -51,12 +51,12 @@ public class ServiceTimer : ITeaTimer
         return tea.Id;
     }
 
-    private void Notify(object? sender, ElapsedEventArgs e)
+    private async void Notify(object? sender, ElapsedEventArgs e)
     {
         var notifications = Services.GetServices<INotifyer>();
         foreach (var notification in notifications)
         {
-            notification.Notify(null);
+            await notification.Notify(null);
         }
     }
 
