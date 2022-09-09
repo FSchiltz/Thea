@@ -22,7 +22,7 @@ public class TeaController : ControllerBase
     {
         _logger.LogInformation("Get teas");
 
-        return await _datastore.GetTeasAsync();
+        return (await _datastore.GetTeasAsync()).OrderByDescending(t => t.Order);
     }
 
     [HttpPost]
@@ -34,6 +34,14 @@ public class TeaController : ControllerBase
             await _datastore.UpdateTeaAsync(tea);
         else
             await _datastore.SaveTeaAsync(tea);
+    }
+
+    [HttpPost]
+    public async Task PostOrderAsync([FromBody] IEnumerable<(Guid id, int order)> orders)
+    {
+        _logger.LogInformation("Order changed");
+
+        await _datastore.SaveTeaOrderAsync(orders);
     }
 
     [HttpGet("{id}")]

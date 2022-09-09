@@ -18,6 +18,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
             Description = reader.GetString(2),
             Duration = reader.GetTimeSpan(3),
             Temperature = reader.GetInt32(4),
+            Order = reader.GetInt32(5),
         };
     }
 
@@ -41,7 +42,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = "SELECT id, name, description, duration, temperature FROM Tea WHERE id=$id;";
+        command.CommandText = "SELECT id, name, description, duration, temperature, order FROM Tea WHERE id=$id;";
         command.Parameters.AddWithValue("$id", id);
 
         using var reader = await command.ExecuteReaderAsync();
@@ -61,7 +62,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = "SELECT id, name, description, duration, temperature FROM Tea;";
+        command.CommandText = "SELECT id, name, description, duration, temperature, order FROM Tea;";
 
         using var reader = await command.ExecuteReaderAsync();
 
@@ -154,5 +155,23 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
+    }
+
+    public async Task SaveTeaOrderAsync(IEnumerable<(Guid id, int order)> orders)
+    {
+        using var connection = GetConnection();
+
+        await connection.OpenAsync();
+
+        foreach (var order in orders)
+        {
+            var command = connection.CreateCommand();
+            command.CommandText = "UPDATE Tea SET order=$order WHERE id=$id;";
+
+            command.Parameters.AddWithValue("$id", order.id);
+            command.Parameters.AddWithValue("$order", order.order);
+
+            await command.ExecuteNonQueryAsync();
+        }
     }
 }

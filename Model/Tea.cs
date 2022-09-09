@@ -12,6 +12,9 @@ public class Tea
 
     public string? Description { get; set; }
 
+    // Order of display
+    public int Order { get; set; }
+
     public Tea(Guid id, string name)
     {
         Name = name;
