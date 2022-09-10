@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { NavBar } from './NavBar';
 import { createDuration, deconstructDuration } from '../helpers/Format';
 import { askNotifyPermission } from '../helpers/Notify';
-import { deleteTea, getTeas, getTea, updateTea } from '../api/TeaApi';
-import TeasTable from './TeasTable';
+import { getTeas, getTea, updateTea } from '../api/TeaApi';
+import { TeasTable } from './TeasTable';
 import AddModal from './AddModal';
 
 export class Home extends Component {
@@ -14,8 +14,8 @@ export class Home extends Component {
 		var notify = (localStorage.getItem(this.notifyStorageKey) === 'true');
 
 		this.state = {
-			teas: [], loading: true, duration: null, tea: null,
-			timerOn: false,
+			teas: [],
+			loading: true,
 			edit: false,
 			add: false,
 			notify: notify,
@@ -23,24 +23,21 @@ export class Home extends Component {
 		};
 
 		// This binding is necessary to make `this` work in the callback 
-		this.handleClick = this.handleClick.bind(this);
-		this.handleDeleteClick = this.handleDeleteClick.bind(this);
 		this.openSavePopup = this.openSavePopup.bind(this);
 		this.openEditPopup = this.openEditPopup.bind(this);
-		this.closePopup = this.closePopup.bind(this);
 		this.closeAddPopup = this.closeAddPopup.bind(this);
 		this.saveNewTea = this.saveNewTea.bind(this);
 		this.formChanged = this.formChanged.bind(this);
-		this.notifyDone = this.notifyDone.bind(this);
 		this.onNotifyChanged = this.onNotifyChanged.bind(this);
+		this.dataChanged = this.dataChanged.bind(this);
 	}
 
 	componentDidMount() {
 		this.populateteasData();
 	}
 
-	closePopup() {
-		this.closeTimer();
+	dataChanged() {
+		this.populateteasData();
 	}
 
 	onNotifyChanged(notify) {
@@ -77,14 +74,6 @@ export class Home extends Component {
 		this.setState({ newTea: event });
 	}
 
-	async deleteTea(teaId) {
-		await deleteTea(teaId);
-
-		console.log('Tea deleted');
-
-		await this.populateteasData();
-	}
-
 	async saveNewTea() {
 		console.log("New tea saved");
 
@@ -115,13 +104,6 @@ export class Home extends Component {
 		await this.populateteasData();
 	}
 
-	notifyDone() {
-		if (this.state.notify) {
-			// if so, create a notification
-			new Notification("Tea ready !");
-		}
-	}
-
 	displayError(e) {
 		this.setState({ error: e })
 	}
@@ -134,8 +116,10 @@ export class Home extends Component {
 		else {
 			contents =
 				<div>
-					<AddModal add={this.state.add} closeAddPopup={this.closeAddPopup} edit={this.state.edit} formChanged={this.formChanged} newTea={this.state.newTea} saveNewTea={this.saveNewTea} />
-					<TeasTable teas={this.state.teas} openEditPopup={this.openEditPopup} />
+					<AddModal add={this.state.add} closeAddPopup={this.closeAddPopup} edit={this.state.edit} formChanged={this.formChanged}
+						newTea={this.state.newTea} saveNewTea={this.saveNewTea} />
+					<TeasTable teas={this.state.teas} openEditPopup={this.openEditPopup} notify={this.state.notify}
+						dataChanged={this.dataChanged} />
 				</div>;
 		}
 

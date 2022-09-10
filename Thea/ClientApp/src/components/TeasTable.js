@@ -1,23 +1,32 @@
 import { Component } from "react";
-import { getTea } from "../api/TeaApi";
+import { deleteTea, getTea } from "../api/TeaApi";
 import { setTimer, stopTimer } from "../api/TimerApi";
 import { deconstructDuration, formatDuration } from "../helpers/Format";
 import { askNotifyPermission } from "../helpers/Notify";
 import TimerModal from "./TimerModal";
 
-
 export class TeasTable extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            duration: null,
+            tea: null,
+            timerOn: false,
+            timerId: null,
+        };
 
         // This binding is necessary to make `this` work in the callback 
         this.handleClick = this.handleClick.bind(this);
         this.handleDeleteClick = this.handleDeleteClick.bind(this);
+        this.closePopup = this.closePopup.bind(this);
+        this.notifyDone = this.notifyDone.bind(this);
+        this.openEditPopup = this.props.openEditPopup.bind(this);
     }
 
     handleClick(e) {
-        askNotifyPermission();
+        // if the user wants notification we ask before the timer is done
+        if (this.props.notify)
+            askNotifyPermission();
         this.selectTea(e);
     }
 
@@ -25,6 +34,25 @@ export class TeasTable extends Component {
         e.preventDefault();
 
         this.deleteTea(id);
+    }
+
+    closePopup() {
+        this.closeTimer();
+    }
+
+    notifyDone() {
+        if (this.props.notify) {
+            // if so, create a notification
+            new Notification("Tea ready !");
+        }
+    }
+
+    async deleteTea(teaId) {
+        await deleteTea(teaId);
+
+        console.log('Tea deleted');
+
+        await this.props.dataChanged();
     }
 
     async selectTea(teaId) {
