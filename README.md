@@ -38,4 +38,4 @@ Storage__Password=password
 
 ## License
 
-Icone: <a href="https://www.flaticon.com/free-icons/hot-chocolate" title="hot chocolate icons">Hot chocolate icons created by Us and Up - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/tea-bag" title="tea bag icons">Tea bag icons created by rizky maulidhani - Flaticon</a>
