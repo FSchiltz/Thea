@@ -6,7 +6,7 @@ RUN apt-get install -y nodejs
 WORKDIR /source
 
 # copy everything else and build app
-COPY . ./app/
+COPY ./Thea ./app/
 WORKDIR /source/app
 RUN dotnet publish -c release -o /app 
 

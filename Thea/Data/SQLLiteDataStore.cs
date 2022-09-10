@@ -22,7 +22,17 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         _logger = logger;
 
         _path = config.Path ?? DEFAULTPATH;
-        _pathDb = Path.Combine(_path, DEFAULTDB);
+
+        if (IsMemory(_path))
+            _pathDb = _path;
+        else
+            _pathDb = Path.Combine(_path, DEFAULTDB);
+    }
+
+    private bool IsMemory(string path)
+    {
+        return path.StartsWith(":memory:", StringComparison.OrdinalIgnoreCase)
+         || path.Contains(";Mode=Memory", StringComparison.OrdinalIgnoreCase);
     }
 
     protected SqliteConnection GetConnection() => _connection ??= new SqliteConnection("Data Source=" + _pathDb);
@@ -40,8 +50,8 @@ public class SQLLiteDataStore : IDataStore, IDisposable
 
     public async Task Init()
     {
-        // create scheme
-        if (!Directory.Exists(_path))
+        // create scheme if not memorydb
+        if (!IsMemory(_path) && !Directory.Exists(_path))
         {
             Directory.CreateDirectory(_path);
             _logger?.LogInformation("Path created for sql storage: {path}", _path);

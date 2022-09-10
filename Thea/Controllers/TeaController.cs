@@ -8,10 +8,10 @@ namespace Thea.Controllers;
 [Route("api/[controller]")]
 public class TeaController : ControllerBase
 {
-    private readonly ILogger<TeaController> _logger;
+    private readonly ILogger<TeaController>? _logger;
     private readonly IDataStore _datastore;
 
-    public TeaController(IDataStore datastore, ILogger<TeaController> logger)
+    public TeaController(IDataStore datastore, ILogger<TeaController>? logger)
     {
         _logger = logger;
         _datastore = datastore;
@@ -20,7 +20,7 @@ public class TeaController : ControllerBase
     [HttpGet]
     public async Task<IEnumerable<Tea>> GetAsync()
     {
-        _logger.LogInformation("Get teas");
+        _logger?.LogInformation("Get teas");
 
         return (await _datastore.GetTeasAsync()).OrderByDescending(t => t.Order);
     }
@@ -28,7 +28,7 @@ public class TeaController : ControllerBase
     [HttpPost]
     public async Task PostAsync([FromBody] Tea tea)
     {
-        _logger.LogInformation("New tea added");
+        _logger?.LogInformation("New tea added");
 
         if (tea.Id != Guid.Empty)
             await _datastore.UpdateTeaAsync(tea);
@@ -39,7 +39,7 @@ public class TeaController : ControllerBase
     [HttpPost("Order")]
     public async Task PostOrderAsync([FromBody] IEnumerable<(Guid id, int order)> orders)
     {
-        _logger.LogInformation("Order changed");
+        _logger?.LogInformation("Order changed");
 
         await _datastore.SaveTeaOrderAsync(orders);
     }
@@ -47,7 +47,7 @@ public class TeaController : ControllerBase
     [HttpGet("{id}")]
     public async Task<Tea?> GetTeaAsync([FromRoute] Guid id)
     {
-        _logger.LogInformation("Get tea {Id}", id);
+        _logger?.LogInformation("Get tea {Id}", id);
 
         return await _datastore.GetTeaAsync(id);
     }
@@ -55,7 +55,7 @@ public class TeaController : ControllerBase
     [HttpDelete("{id}")]
     public async Task DeleteTeaAsync([FromRoute] Guid id)
     {
-        _logger.LogInformation("Delete tea {Id}", id);
+        _logger?.LogInformation("Delete tea {Id}", id);
 
         await _datastore.DeleteTeaAsync(id);
     }
