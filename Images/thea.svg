@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2 (1:1.2.1+202207142221+cd75a1ee6d)"
+   sodipodi:docname="thea.svg"
+   inkscape:export-filename="ico.png"
+   inkscape:export-xdpi="908.57861"
+   inkscape:export-ydpi="908.57861"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="true"
+     inkscape:zoom="22.521493"
+     inkscape:cx="183.24718"
+     inkscape:cy="403.17044"
+     inkscape:window-width="1920"
+     inkscape:window-height="1007"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer6">
+    <inkscape:grid
+       type="xygrid"
+       id="grid9158" />
+  </sodipodi:namedview>
+  <defs
+     id="defs2" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="fond"
+     style="display:none">
+    <rect
+       style="fill:#ffffff;stroke:none;stroke-width:0.171178;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;paint-order:markers fill stroke"
+       id="rect10077"
+       width="8.4666653"
+       height="9.5041761"
+       x="47.360416"
+       y="102.67915" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer6"
+     inkscape:label="Tasse">
+    <path
+       id="path3174"
+       style="display:inline;fill:#2ca02c;stroke:none;stroke-width:0.27762;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;paint-order:markers fill stroke"
+       d="M 47.920589 103.18698 C 47.90849 103.18685 47.898007 103.18708 47.889583 103.1875 C 47.886183 107.97772 50.270833 111.125 50.270833 111.125 C 51.068047 111.2526 52.124552 111.25688 52.916667 111.125 C 52.916667 111.125 55.297917 107.95 55.297917 103.1875 C 55.040123 103.1875 52.945923 103.43816 51.693486 103.45105 L 51.693486 104.70989 C 52.756764 105.66953 53.756523 108.1818 51.693486 108.61611 L 51.693486 107.15625 L 51.494014 107.15625 L 51.494014 108.61663 C 49.436152 108.1298 50.423281 105.63962 51.494014 104.69335 L 51.494014 103.45053 C 50.281958 103.43739 48.285706 103.19109 47.920589 103.18698 z " />
+    <path
+       style="display:inline;fill:#2ca02c;stroke:none;stroke-width:0.458275px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 48.683333,110.86042 c 1.5875,0.79375 4.233334,0.79375 5.820834,0 0,0.79375 -1.878128,1.05833 -2.910417,1.05833 -1.032289,0 -2.910417,-0.26458 -2.910417,-1.05833 z"
+       id="path9941"
+       sodipodi:nodetypes="ccac" />
+  </g>
+</svg>

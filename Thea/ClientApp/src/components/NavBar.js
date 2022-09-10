@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { askNotifyPermission } from '../helpers/Notify';
-import './NavBar.css';
+import React, { Component } from "react";
+import { askNotifyPermission } from "../helpers/Notify";
+import "./NavBar.css";
 
 export class NavBar extends Component {
     constructor(props) {
@@ -36,12 +36,12 @@ export class NavBar extends Component {
                     <div className="navbar-brand">
                         <div className="navbar-item">
                             <img src="/logo.png" alt="Thea" />
-                            <p className='ml-2 is-size-3'>Thea</p>
+                            <p className="ml-2 is-size-3">Thea</p>
                         </div>
 
                         <div className="navbar-item ml-4">
                             <div className="buttons">
-                                <div className='button has-background-primary' onClick={this.onAddClick}>
+                                <div className="button has-background-primary" onClick={this.onAddClick}>
                                     <span className="icon">
                                         <svg className="feather">
                                             <use href="/feather-sprite.svg#plus" />
@@ -54,25 +54,26 @@ export class NavBar extends Component {
                 </nav>
                 <div className="bottom-menu m-2">
                     <div className="dropdown is-hoverable is-right">
-                        <div className="dropdown-trigger box m-0 p-2 is-clickable" onClick={this.handleToggle}>
-                            <span className="icon">
-                                <svg className="feather">
-                                    <use href="/feather-sprite.svg#settings" />
-                                </svg>
-                            </span>
+                        <div className="dropdown-trigger m-0 p-0 is-clickable" onClick={this.handleToggle}>
+                            <svg className="feather m-2" width="30" height="30">
+                                <use href="/feather-sprite.svg#settings" />
+                            </svg>
                         </div>
 
                         <div className="dropdown-menu">
                             <div className="dropdown-content">
                                 <div className="dropdown-item">
-                                    <label className='checkbox'>
-                                        <input type="checkbox" checked={this.props.notify} onChange={this.handleChange} />
-                                        Notify
+                                    <label className="checkbox m-4">
+                                        <input className="m-1" type="checkbox" checked={this.props.notify} onChange={this.handleChange} />
+                                        <span className="is-size-6 ml-2">Notify</span>
                                     </label>
                                 </div>
                                 <div className="dropdown-item">
-                                    <a href="https://github.com/FSchiltz/Thea/issues" target="_blank" rel="noreferrer">                                        
-                                        Report bug
+                                    <a className="button is-text" href="https://github.com/FSchiltz/Thea/issues" target="_blank" rel="noreferrer">
+                                        <svg className="feather">
+                                            <use href="/feather-sprite.svg#external-link" />
+                                        </svg>
+                                        <span className="ml-2">Report bug</span>
                                     </a>
                                 </div>
                             </div>
