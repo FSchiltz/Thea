@@ -39,12 +39,10 @@
   </ol>
 </details>
 
-
+![product-screenshot]
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
 
 A simple selfhosted tea timer so you won't forget your infusion.
 Supprts mqtt to notify to allows integration with many notification setups.
@@ -62,32 +60,90 @@ Supprts mqtt to notify to allows integration with many notification setups.
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
-
 ### Installation
+#### Bare metal
+Comming soon
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/FSchiltz/Thea.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
+#### Docker compose minimal
+1. Create the docker-compose.yaml file
+```
+version: "3.9"
+volumes:
+  - storage
+services:
+  web:
+    image: ghcr.io/fschiltz/thea:main
+    ports:
+      - "80:80"
+    volumes:
+      - storage:/app/storage/
+
+```
+
+2. Run
+```
+docker compose up
+```
+
+#### Docker compose complete
+1. Create the docker-compose.yaml file
+```
+version: "3.9"
+volumes:
+   - storage
+services:
+  web:
+    image: ghcr.io/fschiltz/thea:main
+    expose:
+      - "80"
+
+    volumes:
+      - storage:/app/storage/
+    env_file:
+      - .env
+```
+
+2. Create the .env file
+```
+MQTT__HOST=test.com
+MQTT__PORT=1883
+MQTT__USERNAME=user
+MQTT__PASSWORD=password
+MQTT__TOPIC=Thea/Tea
+
+Storage__Type=SQLLITE
+Storage__Path=storage/db/
+Storage__Username=user
+Storage__Password=password
+ ```
+ 
+3. Run
+```
+docker compose up
+```
+4. Expose the service to your network with you reverse proxy ( and authentification solution if needed )
+
+#### From source
+  1. Clone the repo
+  2. Install npm packages
+  ```
+  cd ./Thea/ClientApp
+  npm install
+  ```
+  3. Run
+  ```
+  cd ../..
+  dotnet run
+  ```
+  
+#### From source (docker)
+  1. Clone the repo
+  2. run the docker
+  ```
+  docker compose build
+  docker compose up
+  ```
+  3. Open http://localhost:80
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -119,7 +175,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[product-screenshot]: images/screenshot.png
+[product-screenshot]: Images/screenshot.png
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
 [Bulma-url]: https://bulma.io/
