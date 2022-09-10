@@ -55,7 +55,7 @@ export class NavBar extends Component {
                 <div className="bottom-menu m-2">
                     <div className="dropdown is-hoverable is-right">
                         <div className="dropdown-trigger m-0 p-0 is-clickable" onClick={this.handleToggle}>
-                            <svg className="feather m-2" width="30" height="30">
+                            <svg className="feather m-3" width="30" height="30">
                                 <use href="/feather-sprite.svg#settings" />
                             </svg>
                         </div>
