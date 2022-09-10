@@ -81,7 +81,6 @@ export class Home extends Component {
 
 	formChanged(event) {
 		this.setState({ newTea: event });
-		console.log(event);
 	}
 
 	async deleteTea(teaId) {
