@@ -1,6 +1,6 @@
 import React from 'react';
-import CountdownTimer from './CountdownTimer';
-import { getTime } from '../hooks/useCountdown';
+import { getTime } from '../helpers/Time';
+import CountdownTimer from './commons/CountdownTimer';
 
 const TimerModal = ({ duration, notifyDone, closePopup, tea, timerOn }) => {
     if (duration) {
