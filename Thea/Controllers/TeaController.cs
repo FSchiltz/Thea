@@ -22,7 +22,7 @@ public class TeaController : ControllerBase
     {
         _logger?.LogInformation("Get teas");
 
-        return (await _datastore.GetTeasAsync()).OrderByDescending(t => t.Order);
+        return (await _datastore.GetTeasAsync()).OrderBy(t => t.Name);
     }
 
     [HttpPost]
