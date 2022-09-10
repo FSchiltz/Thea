@@ -5,7 +5,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/FSchiltz/Thea">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="Thea/ClientApp/public/logo.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Thea</h3>
@@ -46,16 +46,14 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `Thea`, `Selfhosted tea timer with mqtt support`
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
+A simple selfhosted tea timer so you won't forget your infusion.
+Supprts mqtt to notify to allows integration with many notification setups.
 
 
 ### Built With
 
 * [![React][React.js]][React-url]
-* [![Bulma][Bulma]][Bulma-url]
+* [Bulma][Bulma-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -124,4 +122,5 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 [product-screenshot]: images/screenshot.png
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
+[Bulma-url]: https://bulma.io/
 
