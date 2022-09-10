@@ -70,6 +70,11 @@ export class NavBar extends Component {
                                         Notify
                                     </label>
                                 </div>
+                                <div className="dropdown-item">
+                                    <a href="https://github.com/FSchiltz/Thea/issues" target="_blank" rel="noreferrer">                                        
+                                        Report bug
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

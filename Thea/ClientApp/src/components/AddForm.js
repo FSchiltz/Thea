@@ -42,7 +42,6 @@ export class AddForm extends Component {
     changed() {
         if (this.props.onChange) {
             this.props.onChange(this.state);
-            console.log(this.state);
         }
     }
 
@@ -62,7 +61,7 @@ export class AddForm extends Component {
                 <div className='field'>
                     <label className="label">Duration</label>
                     <div className="field has-addons">
-                        <p className="control">
+                        <div className="control">
                             <div className="button is-static">
                                 <span className="icon is-small is-left">
                                     <svg className="feather">
@@ -70,7 +69,7 @@ export class AddForm extends Component {
                                     </svg>
                                 </span>
                             </div>
-                        </p>
+                        </div>
                         <div className="control">
                             <input className='input' type="number" name="durationMinutes" placeholder="2" value={this.state.durationMinutes} onChange={this.handleMinutesChange} />
 
@@ -84,7 +83,7 @@ export class AddForm extends Component {
                 <div className='field'>
                     <label className='label' >Temperature</label>
                     <div className="field has-addons">
-                        <p className="control">
+                        <div className="control">
                             <div className="button is-static">
                                 <span className="icon is-small is-left">
                                     <svg className="feather">
@@ -92,11 +91,12 @@ export class AddForm extends Component {
                                     </svg>
                                 </span>
                             </div>
-                        </p>
+                        </div>
                         <p className="control">
                             <input className='input' type="number" name="temperature" placeholder="90 °C" value={this.state.temperature} onChange={this.handleTemperatureChange} />
                         </p>
-                    </div></div>
+                    </div>
+                </div>
             </form>
         );
     }
