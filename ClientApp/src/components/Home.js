@@ -5,6 +5,8 @@ import { AddForm } from './AddForm';
 import { NavBar } from './NavBar';
 import { createDuration, deconstructDuration, formatDuration } from '../helpers/Format';
 import { askNotifyPermission } from '../helpers/Notify';
+import { deleteTea, getTeas, getTea, updateTea } from '../api/TeaApi';
+import { stopTimer, setTimer } from '../api/TimerApi';
 
 export class Home extends Component {
 	constructor(props) {
@@ -63,7 +65,7 @@ export class Home extends Component {
 	async openEditPopup(e, id) {
 		e.preventDefault();
 
-		const newTea = await this.getTea(id);
+		const newTea = await getTea(id);
 
 		const [minutes, seconds] = deconstructDuration(newTea.duration);
 		newTea.durationMinutes = minutes;
@@ -83,20 +85,15 @@ export class Home extends Component {
 	}
 
 	async deleteTea(teaId) {
-		await fetch('/api/tea/' + teaId, { method: 'DELETE' });
+		await deleteTea(teaId);
 
 		console.log('Tea deleted');
 
 		await this.populateteasData();
 	}
 
-	async getTea(id) {
-		const response = await fetch('/api/tea/' + id);
-		return await response.json();
-	}
-
 	async selectTea(teaId) {
-		const data = await this.getTea(teaId);
+		const data = await getTea(teaId);
 
 		const [minutes, seconds] = deconstructDuration(data.duration);
 
@@ -105,8 +102,7 @@ export class Home extends Component {
 
 		console.log('Timer started');
 
-		const timerResponse = await fetch('/api/timer/' + teaId, { method: 'POST' });
-		const timerId = await timerResponse.json();
+		const timerId = await setTimer(teaId);
 		console.log('Server timer started');
 
 		this.setState({ duration: duration, tea: data, timerOn: true, timerId: timerId });
@@ -119,7 +115,7 @@ export class Home extends Component {
 		const timerId = this.state.timerId;
 
 		if (timerId) {
-			await fetch('/api/timer/' + timerId, { method: 'DELETE' });
+			await stopTimer(timerId);
 			console.log('Server timer stopped');
 		}
 
@@ -151,13 +147,7 @@ export class Home extends Component {
 		if (this.state.newTea.id)
 			tea.id = this.state.newTea.id;
 
-		await fetch('/api/tea/', {
-			method: 'POST',
-			body: JSON.stringify(tea),
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		})
+		await updateTea(tea);
 		this.closeAddPopup();
 		await this.populateteasData();
 	}
@@ -218,6 +208,10 @@ export class Home extends Component {
 				</div>
 			</div>;
 		}
+	}
+
+	displayError(e) {
+		this.setState({ error: e })
 	}
 
 	renderteasTable(teas) {
@@ -300,6 +294,10 @@ export class Home extends Component {
 				</div>;
 		}
 
+		if (this.state.error) {
+			contents += <div>Error</div>
+		}
+
 		return (
 			<div>
 				<NavBar onAddClick={this.openSavePopup} notify={this.state.notify} onNotifyChanged={this.onNotifyChanged}></NavBar>
@@ -309,8 +307,11 @@ export class Home extends Component {
 	}
 
 	async populateteasData() {
-		const response = await fetch('api/tea');
-		const data = await response.json();
-		this.setState({ teas: data, loading: false });
+		try {
+			const data = await getTeas();
+			this.setState({ teas: data, loading: false });
+		} catch (e) {
+			this.displayError(e);
+		}
 	}
 }
