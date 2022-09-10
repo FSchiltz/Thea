@@ -11,12 +11,16 @@ import { stopTimer, setTimer } from '../api/TimerApi';
 export class Home extends Component {
 	constructor(props) {
 		super(props);
+
+		this.notifyStorageKey = "Thea.Notify";
+		var notify = (localStorage.getItem(this.notifyStorageKey) === 'true');
+
 		this.state = {
 			teas: [], loading: true, duration: null, tea: null,
 			timerOn: false,
 			edit: false,
 			add: false,
-			notify: false,
+			notify: notify,
 			newTea: {}
 		};
 
@@ -55,6 +59,7 @@ export class Home extends Component {
 	}
 
 	onNotifyChanged(notify) {
+		localStorage.setItem(this.notifyStorageKey, notify);
 		if (notify)
 			askNotifyPermission()
 		this.setState({ notify: notify });
