@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import CountdownTimer from './CountdownTimer';
-import { getTime } from '../hooks/useCountdown';
 import { AddForm } from './AddForm';
 import { NavBar } from './NavBar';
 import { createDuration, deconstructDuration, formatDuration } from '../helpers/Format';
 import { askNotifyPermission } from '../helpers/Notify';
 import { deleteTea, getTeas, getTea, updateTea } from '../api/TeaApi';
 import { stopTimer, setTimer } from '../api/TimerApi';
+import TimerModal from './TimerModal';
+import TeasTable from './TeasTable';
+import AddModal from './AddModal';
 
 export class Home extends Component {
 	constructor(props) {
@@ -117,7 +118,6 @@ export class Home extends Component {
 	}
 
 	async closeTimer() {
-		// TODO cancel le timer coté serveur
 		console.log('Timer stopped');
 
 		const timerId = this.state.timerId;
@@ -160,32 +160,6 @@ export class Home extends Component {
 		await this.populateteasData();
 	}
 
-	renderAddForm() {
-		if (this.state.edit || this.state.add) {
-			const active = "is-active";
-
-			return <div className={`modal ${active}`}>
-				<div className="modal-background"></div>
-				<div className='modal-content'>
-					<div className='modal-card'>
-						<header className="modal-card-head">
-							<p className="modal-card-title">Add</p>
-						</header>
-					</div>
-					<section className="modal-card-body">
-						<AddForm onChange={this.formChanged} name={this.state.newTea.name} description={this.state.newTea.description}
-							temperature={this.state.newTea.temperature} durationMinutes={this.state.newTea.durationMinutes}
-							durationSeconds={this.state.newTea.durationSeconds} id={this.state.newTea.id}></AddForm>
-					</section>
-					<footer className="modal-card-foot">
-						<button className="button is-success" onClick={this.saveNewTea}>Save changes</button>
-						<button className="button" onClick={this.closeAddPopup}>Cancel</button>
-					</footer>
-				</div>
-			</div>
-		}
-	}
-
 	notifyDone() {
 		if (this.state.notify) {
 			// if so, create a notification
@@ -193,99 +167,8 @@ export class Home extends Component {
 		}
 	}
 
-	renderTimer(duration) {
-		if (duration) {
-			const active = this.state.timerOn ? "is-active" : "";
-
-			return <div className={`modal ${active}`}>
-				<div className="modal-background"></div>
-				<div className='modal-content'>
-					<div className='modal-card'>
-						<header className="modal-card-head">
-							<p className="modal-card-title">{this.state.tea.name}</p>
-						</header>
-					</div>
-					<section className="modal-card-body">
-						<div className='content'>
-							<CountdownTimer targetDate={duration} total={getTime(new Date(duration))} callback={this.notifyDone} />
-						</div>
-					</section>
-					<footer className="modal-card-foot">
-						<button className="button" onClick={this.closePopup}>Cancel</button>
-					</footer>
-				</div>
-			</div>;
-		}
-	}
-
 	displayError(e) {
 		this.setState({ error: e })
-	}
-
-	renderteasTable(teas) {
-		let images;
-		let noImages;
-		// map variables to each item in fetched image array and return image component
-		if (teas.length > 0) {
-			images = teas.map(tea =>
-			(// TODO fix arrow function
-				<div className='card m-1' key={tea.id} >
-					<div className='card-content is-clickable' onClick={() => this.handleClick(tea.id)}>
-						<p className='title'>{tea.name}</p>
-						<div className='level is-mobile'>
-							<div className='level-left'>
-								<div className='level-item'>
-									<div className='box icon-text'>
-										<span className="icon">
-											<svg className="feather">
-												<use href="/feather-sprite.svg#thermometer" />
-											</svg>
-										</span>
-										<span>{tea.temperature} °C</span>
-									</div>
-								</div>
-								<div className='level-item'>
-									<div className='box icon-text'>
-										<span className="icon">
-											<svg className="feather">
-												<use href="/feather-sprite.svg#clock" />
-											</svg>
-										</span>
-										<span>{formatDuration(tea.duration)}</span>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div className='content'>{tea.description}</div>
-					</div>
-					<footer className="card-footer">
-						<div className="card-footer-item has-text-primary is-clickable" onClick={(e) => this.openEditPopup(e, tea.id)}>
-							<svg className="feather">
-								<use href="/feather-sprite.svg#edit" />
-							</svg>
-						</div>
-						<div className="card-footer-item has-text-danger is-clickable" onClick={(e) => this.handleDeleteClick(e, tea.id)}>
-							<span className="icon">
-								<svg className="feather">
-									<use href="/feather-sprite.svg#trash" />
-								</svg>
-							</span>
-						</div>
-					</footer>
-				</div>
-			));
-		} else {
-			noImages = <div className='block is-size-1 is-align-self-flex-end' key="1">No teas</div>;
-		}
-
-		return (
-			<div className='is-flex is-flex-direction-row is-flex-wrap-wrap'>
-				{images}
-
-				{noImages}
-			</div>
-		);
 	}
 
 	render() {
@@ -296,9 +179,9 @@ export class Home extends Component {
 		else {
 			contents =
 				<div>
-					{this.renderAddForm()}
-					{this.renderTimer(this.state.duration, this.state.tea)}
-					{this.renderteasTable(this.state.teas)}
+					<AddModal add={this.state.add} closeAddPopup={this.closeAddPopup} edit={this.state.edit} formChanged={this.formChanged} newTea={this.state.newTea} saveNewTea={this.saveNewTea} />
+					<TimerModal duration={this.state.duration} notifyDone={this.notifyDone} closePopup={this.closePopup} tea={this.state.tea} timerOn={this.state.timerOn} />
+					<TeasTable teas={this.state.teas} handleClick={this.handleClick} handleDeleteClick={this.handleDeleteClick} openEditPopup={this.openEditPopup} />
 				</div>;
 		}
 
