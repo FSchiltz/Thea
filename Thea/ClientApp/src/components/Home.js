@@ -38,7 +38,9 @@ export class Home extends Component {
 	}
 
 	handleClick(e) {
-		askNotifyPermission();
+		// if the user wants notification we ask before the timer is done
+		if (this.state.notify)
+			askNotifyPermission();
 		this.selectTea(e);
 	}
 
@@ -53,6 +55,8 @@ export class Home extends Component {
 	}
 
 	onNotifyChanged(notify) {
+		if (notify)
+			askNotifyPermission()
 		this.setState({ notify: notify });
 	}
 
