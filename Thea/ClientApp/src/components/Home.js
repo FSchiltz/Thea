@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import { AddForm } from './AddForm';
 import { NavBar } from './NavBar';
-import { createDuration, deconstructDuration, formatDuration } from '../helpers/Format';
+import { createDuration, deconstructDuration } from '../helpers/Format';
 import { askNotifyPermission } from '../helpers/Notify';
 import { deleteTea, getTeas, getTea, updateTea } from '../api/TeaApi';
-import { stopTimer, setTimer } from '../api/TimerApi';
-import TimerModal from './TimerModal';
 import TeasTable from './TeasTable';
 import AddModal from './AddModal';
 
@@ -40,19 +37,6 @@ export class Home extends Component {
 
 	componentDidMount() {
 		this.populateteasData();
-	}
-
-	handleClick(e) {
-		// if the user wants notification we ask before the timer is done
-		if (this.state.notify)
-			askNotifyPermission();
-		this.selectTea(e);
-	}
-
-	handleDeleteClick(e, id) {
-		e.preventDefault();
-
-		this.deleteTea(id);
 	}
 
 	closePopup() {
@@ -99,35 +83,6 @@ export class Home extends Component {
 		console.log('Tea deleted');
 
 		await this.populateteasData();
-	}
-
-	async selectTea(teaId) {
-		const data = await getTea(teaId);
-
-		const [minutes, seconds] = deconstructDuration(data.duration);
-
-		const duration = new Date();
-		duration.setSeconds((minutes * 60) + seconds + duration.getSeconds());
-
-		console.log('Timer started');
-
-		const timerId = await setTimer(teaId);
-		console.log('Server timer started');
-
-		this.setState({ duration: duration, tea: data, timerOn: true, timerId: timerId });
-	}
-
-	async closeTimer() {
-		console.log('Timer stopped');
-
-		const timerId = this.state.timerId;
-
-		if (timerId) {
-			await stopTimer(timerId);
-			console.log('Server timer stopped');
-		}
-
-		this.setState({ duration: null, tea: null, timerOn: false, timerId: null });
 	}
 
 	async saveNewTea() {
@@ -180,8 +135,7 @@ export class Home extends Component {
 			contents =
 				<div>
 					<AddModal add={this.state.add} closeAddPopup={this.closeAddPopup} edit={this.state.edit} formChanged={this.formChanged} newTea={this.state.newTea} saveNewTea={this.saveNewTea} />
-					<TimerModal duration={this.state.duration} notifyDone={this.notifyDone} closePopup={this.closePopup} tea={this.state.tea} timerOn={this.state.timerOn} />
-					<TeasTable teas={this.state.teas} handleClick={this.handleClick} handleDeleteClick={this.handleDeleteClick} openEditPopup={this.openEditPopup} />
+					<TeasTable teas={this.state.teas} openEditPopup={this.openEditPopup} />
 				</div>;
 		}
 
