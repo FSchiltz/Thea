@@ -1,19 +1,17 @@
 import 'bulma/css/bulma.min.css';
-import React from 'react';
+import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 
-const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 const rootElement = document.getElementById('root');
 
 const root = createRoot(rootElement);
 root.render(
-  <BrowserRouter basename={baseUrl}>
+  <StrictMode>
     <App />
-  </BrowserRouter>);
+  </StrictMode>);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
