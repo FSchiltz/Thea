@@ -1,5 +1,3 @@
-using Xunit;
-
 namespace Thea.Tests.Controllers;
 
 public class TeaTests
