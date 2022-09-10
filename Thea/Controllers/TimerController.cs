@@ -8,11 +8,11 @@ namespace Thea.Controllers;
 [Route("api/[controller]")]
 public class TimerController : ControllerBase
 {
-    private readonly ILogger<TimerController> _logger;
+    private readonly ILogger<TimerController>? _logger;
     private readonly IDataStore _datastore;
     private readonly ITeaTimer _timer;
 
-    public TimerController(IDataStore datastore, ITeaTimer timer, ILogger<TimerController> logger)
+    public TimerController(IDataStore datastore, ITeaTimer timer, ILogger<TimerController>? logger)
     {
         _logger = logger;
         _datastore = datastore;
@@ -22,7 +22,7 @@ public class TimerController : ControllerBase
     [HttpGet]
     public bool Get()
     {
-        _logger.LogInformation("Get running timer");
+        _logger?.LogInformation("Get running timer");
 
         return _timer.Running();
     }
@@ -37,7 +37,7 @@ public class TimerController : ControllerBase
             return Guid.Empty;
 
         // Start background timer
-        _logger.LogInformation("Timer started");
+        _logger?.LogInformation("Timer started");
 
         return _timer.Run(tea, tea.Duration);
     }
@@ -48,6 +48,6 @@ public class TimerController : ControllerBase
         // Cancel running timer
         _timer.Cancel(id);
 
-        _logger.LogInformation("Timer stopped");
+        _logger?.LogInformation("Timer stopped");
     }
 }
