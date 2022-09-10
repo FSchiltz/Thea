@@ -34,11 +34,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
       - name: Npm install
-        working-directory: Thea/ClientApp
+        working-directory: ./Thea/ClientApp
         run: npm ci
       - run: npm run build --if-present
         name: Npm build
-        working-directory: Thea/ClientApp
+        working-directory: ./Thea/ClientApp
       - run: npm test
         name: Npm test
-        working-directory: Thea/ClientApp
+        working-directory: ./Thea/ClientApp
