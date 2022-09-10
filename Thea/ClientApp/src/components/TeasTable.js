@@ -92,11 +92,11 @@ export class TeasTable extends Component {
             (
                 <div className='card m-1' key={tea.id} >
                     <div className='card-content is-clickable' onClick={() => this.handleClick(tea.id)}>
-                        <p className='title'>{tea.name}</p>
+                        <p className='title mb-1'>{tea.name}</p>
                         <div className='level is-mobile'>
                             <div className='level-left'>
                                 <div className='level-item'>
-                                    <div className='box icon-text'>
+                                    <div className='box icon-text p-3'>
                                         <span className="icon">
                                             <svg className="feather">
                                                 <use href="/feather-sprite.svg#thermometer" />
@@ -106,7 +106,7 @@ export class TeasTable extends Component {
                                     </div>
                                 </div>
                                 <div className='level-item'>
-                                    <div className='box icon-text'>
+                                    <div className='box icon-text p-3'>
                                         <span className="icon">
                                             <svg className="feather">
                                                 <use href="/feather-sprite.svg#clock" />
