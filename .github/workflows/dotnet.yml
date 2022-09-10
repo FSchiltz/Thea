@@ -33,6 +33,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
+          cache-dependency-path: "./Thea/ClientApp/package-lock.json"
       - name: Npm install
         working-directory: ./Thea/ClientApp
         run: npm ci
