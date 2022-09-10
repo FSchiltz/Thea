@@ -33,7 +33,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-await app.Services.GetService<IDataStore>()?.Init();
+// Init the storage backend
+var storage = app.Services.GetService<IDataStore>();
+if (storage != null)
+    await storage.Init();
 
 app.MapControllerRoute(
     name: "default",

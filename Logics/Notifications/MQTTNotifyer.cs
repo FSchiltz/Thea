@@ -37,10 +37,10 @@ public class MQTTNotifyer : INotifyer
             var result = await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
 
             if (result == null || result.ResultCode != 0)
-                logger.LogError("MQTT connection error: {code}", result?.ResultCode);
+                logger?.LogError("MQTT connection error: {code}", result?.ResultCode);
             else
             {
-                logger.LogInformation("Connected to mqtt");
+                logger?.LogInformation("Connected to mqtt");
                 var applicationMessage = new MqttApplicationMessageBuilder()
                     .WithTopic(_config.Topic ?? DEFAULTTOPIC)
                     .WithPayload("Done")
@@ -48,12 +48,12 @@ public class MQTTNotifyer : INotifyer
 
                 await mqttClient.PublishAsync(applicationMessage, CancellationToken.None);
 
-                logger.LogInformation("MQTT application message is published to {host}.", _config.Host);
+                logger?.LogInformation("MQTT application message is published to {host}.", _config.Host);
             }
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error Mqtt");
+            logger?.LogError(ex, "Error Mqtt");
         }
     }
 }

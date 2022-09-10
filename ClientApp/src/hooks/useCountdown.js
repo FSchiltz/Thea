@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 const useCountdown = (targetDate, total) => {
-	const countDownDate = new Date(targetDate);
+	const countDownDate = useMemo(() => {
+		return new Date(targetDate);
+	}, [targetDate]);
 
 	const [countDown, setCountDown] = useState(
 		getTime(countDownDate)
@@ -27,8 +29,6 @@ const getReturnValues = (countDown, total) => {
 	const seconds = Math.floor((countDown % (1000 * 60)) / 1000);
 
 	const percent = (countDown / total * 100);
-
-	console.log('percent: ' + percent + ' (' + countDown + '/' + total + ')');
 
 	return [minutes, seconds, percent];
 };

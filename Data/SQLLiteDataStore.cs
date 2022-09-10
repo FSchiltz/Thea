@@ -10,13 +10,13 @@ public class SQLLiteDataStore : IDataStore, IDisposable
     private SqliteConnection? _connection;
     private bool disposedValue;
     private readonly StorageConfig config;
-    private readonly ILogger<SQLLiteDataStore> _logger;
+    private readonly ILogger<SQLLiteDataStore>? _logger;
     private readonly string _path;
     private readonly string _pathDb;
     private const string DEFAULTPATH = "storage/db/";
     private const string DEFAULTDB = "tea.db";
 
-    public SQLLiteDataStore(StorageConfig config, ILogger<SQLLiteDataStore> logger)
+    public SQLLiteDataStore(StorageConfig config, ILogger<SQLLiteDataStore>? logger)
     {
         this.config = config;
         _logger = logger;
@@ -44,7 +44,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         if (!Directory.Exists(_path))
         {
             Directory.CreateDirectory(_path);
-            _logger.LogInformation("Path created for sql storage: {path}", _path);
+            _logger?.LogInformation("Path created for sql storage: {path}", _path);
         }
 
         var connection = GetConnection();
@@ -54,7 +54,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         var command = connection.CreateCommand();
         command.CommandText = "CREATE TABLE IF NOT EXISTS Tea (id varchar(30), name varchar(20), description varchar(200), duration varchar(50), temperature int, display int);";
 
-        _logger.LogInformation("Init sql lite with {Config}", config);
+        _logger?.LogInformation("Init sql lite with {Config}", config);
         await command.ExecuteNonQueryAsync();
     }
 

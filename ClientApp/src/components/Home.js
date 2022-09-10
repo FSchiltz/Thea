@@ -79,7 +79,6 @@ export class Home extends Component {
 
 	formChanged(event) {
 		this.setState({ newTea: event });
-		console.log('Form updated');
 		console.log(event);
 	}
 
@@ -106,7 +105,7 @@ export class Home extends Component {
 
 		console.log('Timer started');
 
-		var timerResponse = await fetch('/api/timer/' + teaId, { method: 'POST' });
+		const timerResponse = await fetch('/api/timer/' + teaId, { method: 'POST' });
 		const timerId = await timerResponse.json();
 		console.log('Server timer started');
 
@@ -259,18 +258,18 @@ export class Home extends Component {
 						<div className='content'>{tea.description}</div>
 					</div>
 					<footer className="card-footer">
-						<a className="card-footer-item has-text-primary" href="#" onClick={(e) => this.openEditPopup(e, tea.id)}>
+						<div className="card-footer-item has-text-primary is-clickable" onClick={(e) => this.openEditPopup(e, tea.id)}>
 							<svg className="feather">
 								<use href="/feather-sprite.svg#edit" />
 							</svg>
-						</a>
-						<a className="card-footer-item has-text-danger" href="#" onClick={(e) => this.handleDeleteClick(e, tea.id)}>
+						</div>
+						<div className="card-footer-item has-text-danger is-clickable" onClick={(e) => this.handleDeleteClick(e, tea.id)}>
 							<span className="icon">
 								<svg className="feather">
 									<use href="/feather-sprite.svg#trash" />
 								</svg>
 							</span>
-						</a>
+						</div>
 					</footer>
 				</div>
 			));

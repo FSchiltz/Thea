@@ -63,13 +63,13 @@ export class AddForm extends Component {
                     <label className="label">Duration</label>
                     <div className="field has-addons">
                         <p className="control">
-                            <a className="button is-static">
+                            <div className="button is-static">
                                 <span className="icon is-small is-left">
                                     <svg className="feather">
                                         <use href="/feather-sprite.svg#clock" />
                                     </svg>
                                 </span>
-                            </a>
+                            </div>
                         </p>
                         <div className="control">
                             <input className='input' type="number" name="durationMinutes" placeholder="2" value={this.state.durationMinutes} onChange={this.handleMinutesChange} />
@@ -85,13 +85,13 @@ export class AddForm extends Component {
                     <label className='label' >Temperature</label>
                     <div className="field has-addons">
                         <p className="control">
-                            <a className="button is-static">
+                            <div className="button is-static">
                                 <span className="icon is-small is-left">
                                     <svg className="feather">
                                         <use href="/feather-sprite.svg#thermometer" />
                                     </svg>
                                 </span>
-                            </a>
+                            </div>
                         </p>
                         <p className="control">
                             <input className='input' type="number" name="temperature" placeholder="90 °C" value={this.state.temperature} onChange={this.handleTemperatureChange} />

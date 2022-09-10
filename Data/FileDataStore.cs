@@ -9,12 +9,12 @@ public class FileDataStore : IDataStore
     private readonly StorageConfig config;
     private readonly string _path;
     private readonly string _teaPath;
-    private readonly ILogger<FileDataStore> _logger;
+    private readonly ILogger<FileDataStore>? _logger;
     private const string DEFAULTPATH = "storage/files/";
     private const string TEAPATH = "teas/";
     private const string TEAFILENAME = "tea_";
 
-    public FileDataStore(StorageConfig config, ILogger<FileDataStore> logger)
+    public FileDataStore(StorageConfig config, ILogger<FileDataStore>? logger)
     {
         this.config = config;
         _path = config.Path ?? DEFAULTPATH;
@@ -63,7 +63,8 @@ public class FileDataStore : IDataStore
             }
             catch (JsonException e)
             {
-                // TODO log
+                _logger?.LogError(e, "Error of storage read");
+
             }
             await text.DisposeAsync();
         }
@@ -76,7 +77,7 @@ public class FileDataStore : IDataStore
         if (!Directory.Exists(_teaPath))
             Directory.CreateDirectory(_teaPath);
 
-        _logger.LogInformation("Init file storage with {Config}", config);
+        _logger?.LogInformation("Init file storage with {Config}", config);
         return Task.CompletedTask;
     }
 
