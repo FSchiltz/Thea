@@ -1,17 +1,27 @@
-import React from 'react';
-import { useCountdown } from '../hooks/useCountdown';
+import React, { useEffect, useState } from 'react';
+import useCountdown from '../../hooks/useCountdown';
 import './CountdownTimer.css';
 
 const CountdownTimer = ({ targetDate, total, callback }) => {
+	const [callbackCalled, setCallbackCalled] = useState(false);
 
 	const [minutes, seconds, percent] = useCountdown(targetDate, total);
+	const time = minutes * 60 + seconds;
 
-	if (minutes + seconds <= 0) {
-		if (callback)
+	useEffect(() => {
+		if (callbackCalled && callback)
 			callback();
+	}, [callbackCalled, callback]);
+
+	if (time <= 0) {
+		if (!callbackCalled) {
+			// Callback only once
+			setCallbackCalled(true);
+		}
+
 		return <ExpiredNotice />;
 	} else {
-		const isDanger = minutes + seconds <= 10;
+		const isDanger = time <= 10;
 		return (
 			<ShowCounter
 				minutes={minutes}

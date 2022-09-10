@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { getTime } from '../helpers/Time';
 
 const useCountdown = (targetDate, total) => {
 	const countDownDate = useMemo(() => {
@@ -33,8 +34,4 @@ const getReturnValues = (countDown, total) => {
 	return [minutes, seconds, percent];
 };
 
-const getTime = (targetDate) => {
-	return targetDate.getTime() - new Date().getTime()
-};
-
-export { useCountdown, getTime };
+export default useCountdown;
