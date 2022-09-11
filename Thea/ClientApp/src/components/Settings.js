@@ -1,0 +1,36 @@
+import { useState } from "react"
+
+export const Settings = ({ notify, handleChange }) => {
+    const [toggle, setToggle] = useState(false);
+
+    const handleToggle = () => {
+        setToggle(!toggle);
+    }
+
+    return <div className="dropdown is-hoverable is-right">
+        <div className="dropdown-trigger m-0 p-0 is-clickable" onClick={handleToggle}>
+            <svg className="feather m-3" width="30" height="30">
+                <use href="/feather-sprite.svg#settings" />
+            </svg>
+        </div>
+
+        <div className="dropdown-menu">
+            <div className="dropdown-content">
+                <div className="dropdown-item">
+                    <label className="checkbox m-4">
+                        <input className="m-1" type="checkbox" checked={notify} onChange={handleChange} />
+                        <span className="is-size-6 ml-2">Notify</span>
+                    </label>
+                </div>
+                <div className="dropdown-item">
+                    <a className="button is-text" href="https://github.com/FSchiltz/Thea/issues" target="_blank" rel="noreferrer">
+                        <svg className="feather">
+                            <use href="/feather-sprite.svg#external-link" />
+                        </svg>
+                        <span className="ml-2">Report bug</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
