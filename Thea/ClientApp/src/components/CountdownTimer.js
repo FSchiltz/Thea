@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import useCountdown from '../../hooks/useCountdown';
+import useCountdown from '../hooks/useCountdown';
 import './CountdownTimer.css';
 
 const CountdownTimer = ({ targetDate, total, callback }) => {
