@@ -16,8 +16,9 @@ public class SQLLiteDataStore : IDataStore, IDisposable
     private const string DEFAULTPATH = "storage/db/";
     private const string DEFAULTDB = "tea.db";
 
-    private readonly List<(string name, string sql)> _Migrations = new(){
-        ("field isDisabled","")
+    private readonly List<(string name, int version, string sql)> _Migrations = new(){
+        ("Init", 1, "CREATE TABLE IF NOT EXISTS Tea (id varchar(30), name varchar(20), description varchar(200), duration varchar(50), temperature int, display int);"),
+        ("Field isDisabled", 2, "ALTER TABLE Tea ADD COLUMN disabled INT DEFAULT 0 NOT NULL;"),
     };
 
     public SQLLiteDataStore(StorageConfig config, ILogger<SQLLiteDataStore>? logger)
@@ -67,25 +68,66 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = "CREATE TABLE IF NOT EXISTS Tea (id varchar(30), name varchar(20), description varchar(200), duration varchar(50), temperature int, display int, disabled int);";
+        command.CommandText = "CREATE TABLE IF NOT EXISTS Metadata (name varchar(20), value varchar(50), version int);";
+        await command.ExecuteNonQueryAsync();
 
-        await ApplyMigration(connection);
+        // get the version
+        var version = await GetVersion(connection);
+
+        if (version == 0)
+        {
+            // create the version field
+            var commandMeta = connection.CreateCommand();
+            commandMeta.CommandText = "INSERT INTO Metadata VALUES ('Version','Version',0)";
+            await commandMeta.ExecuteNonQueryAsync();
+        }
+
+        await ApplyMigration(connection, version);
 
         _logger?.LogInformation("Init sql lite with {Config}", config);
+    }
+
+    private async Task<int> GetVersion(SqliteConnection connection)
+    {
+        var command = connection.CreateCommand();
+        command.CommandText = "SELECT version FROM Metadata WHERE name='Version'";
+        var reader = await command.ExecuteReaderAsync();
+
+        if (await reader.ReadAsync())
+        {
+            return reader.GetInt32(0);
+        }
+        else
+            return 0;
+    }
+
+    private async Task SetVersion(SqliteConnection connection, int version)
+    {
+        var command = connection.CreateCommand();
+        command.CommandText = "UPDATE Metadata SET version=$version WHERE name='Version'";
+        command.Parameters.AddWithValue("$version", version);
         await command.ExecuteNonQueryAsync();
     }
 
-    private async Task ApplyMigration(SqliteConnection connection)
+    private async Task ApplyMigration(SqliteConnection connection, int version)
     {
-        foreach (var migration in _Migrations)
+        var newVersion = 0;
+        foreach (var migration in _Migrations.OrderBy(x => x.version))
         {
-            var command = connection.CreateCommand();
-            command.CommandText = migration.sql;
+            if (migration.version > version)
+            {
+                var command = connection.CreateCommand();
+                command.CommandText = migration.sql;
 
-            await command.ExecuteNonQueryAsync();
+                await command.ExecuteNonQueryAsync();
 
-            _logger?.LogInformation("Migration applied: " + migration.name);
+                newVersion = Math.Max(newVersion, migration.version);
+
+                _logger?.LogInformation($"Migration applied v{migration.version}: " + migration.name);
+            }
         }
+
+        await SetVersion(connection, newVersion);
     }
 
     public async Task<Tea?> GetTeaAsync(Guid id)
@@ -115,9 +157,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = "SELECT id, name, description, duration, temperature, display, disabled FROM Tea";
-        if (!disabled)
-            command.CommandText += "WHERE disabled != 1;";
+        command.CommandText = $"SELECT id, name, description, duration, temperature, display, disabled FROM Tea {(!disabled ? "WHERE disabled != 1" : "")};";
 
         using var reader = await command.ExecuteReaderAsync();
 
@@ -152,7 +192,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
 
     public async Task DisableTeaAsync(Guid id)
     {
-             using var connection = GetConnection();
+        using var connection = GetConnection();
 
         await connection.OpenAsync();
 
@@ -167,7 +207,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
 
     public async Task EnableTeaAsync(Guid id)
     {
-             using var connection = GetConnection();
+        using var connection = GetConnection();
 
         await connection.OpenAsync();
 
