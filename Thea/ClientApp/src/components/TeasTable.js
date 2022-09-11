@@ -101,14 +101,14 @@ export class TeasTable extends Component {
             images = this.props.teas.map(tea =>
             (
                 <div className='card m-1' key={tea.id} >
-                    <div className='card-content is-clickable' onClick={() => this.handleClick(tea.id)}>
-                        <p className='title mb-1'>{tea.name}</p>
-                        <div className='level is-mobile'>
+                    <div className='card-content is-clickable p-4' onClick={() => this.handleClick(tea.id)}>
+                        <p className='title mb-1 is-size-4'>{tea.name}</p>
+                        <div className='level is-mobile has-text-grey mb-3'>
                             <div className='level-left'>
                                 <div className='level-item'>
-                                    <div className='box icon-text p-3'>
+                                    <div className='box icon-text p-2'>
                                         <span className="icon">
-                                            <svg className="feather">
+                                            <svg className="feather" width="25" height="25">
                                                 <use href="/feather-sprite.svg#thermometer" />
                                             </svg>
                                         </span>
@@ -116,9 +116,9 @@ export class TeasTable extends Component {
                                     </div>
                                 </div>
                                 <div className='level-item'>
-                                    <div className='box icon-text p-3'>
+                                    <div className='box icon-text p-2'>
                                         <span className="icon">
-                                            <svg className="feather">
+                                            <svg className="feather" width="25" height="25">
                                                 <use href="/feather-sprite.svg#clock" />
                                             </svg>
                                         </span>
@@ -132,13 +132,13 @@ export class TeasTable extends Component {
                     </div>
                     <footer className="card-footer">
                         <div className="card-footer-item has-text-primary is-clickable" onClick={(e) => this.props.openEditPopup(e, tea.id)}>
-                            <svg className="feather">
+                            <svg className="feather" width="20" height="20">
                                 <use href="/feather-sprite.svg#edit" />
                             </svg>
                         </div>
                         <div className="card-footer-item has-text-danger is-clickable" onClick={(e) => this.handleDeleteClick(e, tea.id)}>
                             <span className="icon">
-                                <svg className="feather">
+                                <svg className="feather" width="20" height="20">
                                     <use href="/feather-sprite.svg#trash" />
                                 </svg>
                             </span>

@@ -8,8 +8,8 @@ export const Settings = ({ notify, handleChange }) => {
     }
 
     return <div className="dropdown is-hoverable is-right">
-        <div className="dropdown-trigger m-0 p-0 is-clickable" onClick={handleToggle}>
-            <svg className="feather m-3" width="30" height="30">
+        <div className="dropdown-trigger is-flex is-clickable" onClick={handleToggle}>
+            <svg className="feather" width="30" height="30">
                 <use href="/feather-sprite.svg#settings" />
             </svg>
         </div>

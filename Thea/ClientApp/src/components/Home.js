@@ -15,6 +15,8 @@ export class Home extends Component {
 
 		this.state = {
 			teas: [],
+			allTeas: [],
+			filter: '',
 			loading: true,
 			edit: false,
 			add: false,
@@ -30,6 +32,7 @@ export class Home extends Component {
 		this.formChanged = this.formChanged.bind(this);
 		this.onNotifyChanged = this.onNotifyChanged.bind(this);
 		this.dataChanged = this.dataChanged.bind(this);
+		this.onFilterChanged = this.onFilterChanged.bind(this);
 	}
 
 	componentDidMount() {
@@ -38,6 +41,10 @@ export class Home extends Component {
 
 	dataChanged() {
 		this.populateteasData();
+	}
+
+	onFilterChanged(e) {
+		this.setState({ filter: e }, this.filter);
 	}
 
 	onNotifyChanged(notify) {
@@ -129,16 +136,29 @@ export class Home extends Component {
 
 		return (
 			<div>
-				<NavBar onAddClick={this.openSavePopup} notify={this.state.notify} onNotifyChanged={this.onNotifyChanged}></NavBar>
+				<NavBar onAddClick={this.openSavePopup} notify={this.state.notify}
+					onNotifyChanged={this.onNotifyChanged} onFilterChanged={this.onFilterChanged} filter={this.state.filter}></NavBar>
 				{contents}
 			</div>
 		);
 	}
 
+	filter() {
+		let filter = this.state.filter;
+		let allTeas = this.state.allTeas;
+		if (filter) {
+			filter = filter.toLocaleLowerCase();
+			allTeas = allTeas.filter((tea) => tea.name.toLocaleLowerCase().includes(filter));
+		}
+
+		console.log("filtered :" + filter);
+		this.setState({ teas: allTeas });
+	}
+
 	async populateteasData() {
 		try {
 			const data = await getTeas();
-			this.setState({ teas: data, loading: false });
+			this.setState({ allTeas: data, loading: false }, this.filter);
 		} catch (e) {
 			this.displayError(e);
 		}
