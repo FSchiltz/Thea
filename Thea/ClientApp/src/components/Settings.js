@@ -1,13 +1,13 @@
 import { useState } from "react"
 
-export const Settings = ({ notify, handleChange }) => {
+export const Settings = ({ notify, handleChange, disable, handleDisableChange }) => {
     const [toggle, setToggle] = useState(false);
 
     const handleToggle = () => {
         setToggle(!toggle);
     }
 
-    return <div className="dropdown is-hoverable is-right">
+    return <div className="dropdown is-hoverable is-active is-right">
         <div className="dropdown-trigger is-flex is-clickable" onClick={handleToggle}>
             <svg className="feather" width="30" height="30">
                 <use href="/feather-sprite.svg#settings" />
@@ -16,6 +16,12 @@ export const Settings = ({ notify, handleChange }) => {
 
         <div className="dropdown-menu">
             <div className="dropdown-content">
+                <div className="dropdown-item">
+                    <label className="checkbox m-4">
+                        <input className="m-1" type="checkbox" checked={disable} onChange={handleDisableChange} />
+                        <span className="is-size-6 ml-2">Show disabled</span>
+                    </label>
+                </div>
                 <div className="dropdown-item">
                     <label className="checkbox m-4">
                         <input className="m-1" type="checkbox" checked={notify} onChange={handleChange} />

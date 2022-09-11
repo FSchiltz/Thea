@@ -10,8 +10,12 @@ export class Home extends Component {
 	constructor(props) {
 		super(props);
 
+		// TODO move to an helper class
 		this.notifyStorageKey = "Thea.Notify";
 		var notify = (localStorage.getItem(this.notifyStorageKey) === 'true');
+
+		this.disableStorageKey = "Thea.Notify";
+		var disable = (localStorage.getItem(this.disableStorageKey) === 'true');
 
 		this.state = {
 			teas: [],
@@ -21,6 +25,7 @@ export class Home extends Component {
 			edit: false,
 			add: false,
 			notify: notify,
+			showDisable: disable,
 			newTea: {}
 		};
 
@@ -33,6 +38,7 @@ export class Home extends Component {
 		this.onNotifyChanged = this.onNotifyChanged.bind(this);
 		this.dataChanged = this.dataChanged.bind(this);
 		this.onFilterChanged = this.onFilterChanged.bind(this);
+		this.onDisableChanged = this.onDisableChanged.bind(this);
 	}
 
 	componentDidMount() {
@@ -52,6 +58,11 @@ export class Home extends Component {
 		if (notify)
 			askNotifyPermission()
 		this.setState({ notify: notify });
+	}
+
+	onDisableChanged(disable) {
+		localStorage.setItem(this.disableStorageKey, disable);
+		this.setState({ showDisable: disable }, this.dataChanged);
 	}
 
 	openSavePopup() {
@@ -136,8 +147,10 @@ export class Home extends Component {
 
 		return (
 			<div>
-				<NavBar onAddClick={this.openSavePopup} notify={this.state.notify}
-					onNotifyChanged={this.onNotifyChanged} onFilterChanged={this.onFilterChanged} filter={this.state.filter}></NavBar>
+				<NavBar onAddClick={this.openSavePopup}
+					notify={this.state.notify} onNotifyChanged={this.onNotifyChanged}
+					disable={this.state.showDisable} onDisableChanged={this.onDisableChanged}
+					onFilterChanged={this.onFilterChanged} filter={this.state.filter}></NavBar>
 				{contents}
 			</div>
 		);
@@ -157,7 +170,7 @@ export class Home extends Component {
 
 	async populateteasData() {
 		try {
-			const data = await getTeas();
+			const data = await getTeas(this.state.showDisable);
 			this.setState({ allTeas: data, loading: false }, this.filter);
 		} catch (e) {
 			this.displayError(e);

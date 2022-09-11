@@ -1,8 +1,12 @@
 
 // API helper
 
-export async function getTeas() {
-    const response = await fetch('api/tea');
+export async function getTeas(disable) {
+    let url = 'api/tea';
+    if (disable)
+        url += '?disabled=true';
+
+    const response = await fetch(url);
     return await response.json();
 }
 

@@ -120,54 +120,73 @@ export class TeasTable extends Component {
         let images;
         let noImages;
         if (this.props.teas.length > 0) {
-            images = this.props.teas.map(tea =>
-            (
-                <div className='card m-1' key={tea.id} >
-                    <div className='card-content is-clickable p-4' onClick={() => this.handleClick(tea.id)}>
-                        <p className='title mb-1 is-size-4'>{tea.name}</p>
-                        <div className='level is-mobile has-text-grey mb-3'>
-                            <div className='level-left'>
-                                <div className='level-item'>
-                                    <div className='box icon-text p-2'>
-                                        <span className="icon">
-                                            <svg className="feather" width="25" height="25">
-                                                <use href="/feather-sprite.svg#thermometer" />
-                                            </svg>
-                                        </span>
-                                        <span>{tea.temperature} °C</span>
+            images = this.props.teas.map(tea => {
+                let style = 'card m-1';
+                let click = () => { };
+                let edit = (e) => this.props.openEditPopup(e, tea.id);
+                let editIcon = '/feather-sprite.svg#edit';
+
+                if (tea.isDisabled) {
+                    // disabled card are light grey and no click
+                    style += ' has-text-grey-light';
+                    click = () => this.handleClick(tea.id);
+
+                    // disabled can't be edited but enabled
+                    edit = async (e) => {
+                        await enableTea(tea.id);
+                        this.props.dataChanged();
+                    };
+                    editIcon = '/feather-sprite.svg#skip-forward'
+                }
+
+                return (
+                    <div className={style} key={tea.id} >
+                        <div className='card-content is-clickable p-4' onClick={click}>
+                            <p className='title mb-1 is-size-4'>{tea.name}</p>
+                            <div className='level is-mobile has-text-grey mb-3'>
+                                <div className='level-left'>
+                                    <div className='level-item'>
+                                        <div className='box icon-text p-2'>
+                                            <span className="icon">
+                                                <svg className="feather" width="25" height="25">
+                                                    <use href="/feather-sprite.svg#thermometer" />
+                                                </svg>
+                                            </span>
+                                            <span>{tea.temperature} °C</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className='level-item'>
-                                    <div className='box icon-text p-2'>
-                                        <span className="icon">
-                                            <svg className="feather" width="25" height="25">
-                                                <use href="/feather-sprite.svg#clock" />
-                                            </svg>
-                                        </span>
-                                        <span>{formatDuration(tea.duration)}</span>
+                                    <div className='level-item'>
+                                        <div className='box icon-text p-2'>
+                                            <span className="icon">
+                                                <svg className="feather" width="25" height="25">
+                                                    <use href="/feather-sprite.svg#clock" />
+                                                </svg>
+                                            </span>
+                                            <span>{formatDuration(tea.duration)}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className='content'>{tea.description}</div>
-                    </div>
-                    <footer className="card-footer">
-                        <div className="card-footer-item has-text-primary is-clickable" onClick={(e) => this.props.openEditPopup(e, tea.id)}>
-                            <svg className="feather" width="20" height="20">
-                                <use href="/feather-sprite.svg#edit" />
-                            </svg>
+                            <div className='content'>{tea.description}</div>
                         </div>
-                        <div className="card-footer-item has-text-danger is-clickable" onClick={(e) => this.handleDeleteClick(e, tea.id)}>
-                            <span className="icon">
+                        <footer className="card-footer">
+                            <div className="card-footer-item has-text-primary is-clickable" onClick={edit}>
                                 <svg className="feather" width="20" height="20">
-                                    <use href="/feather-sprite.svg#trash" />
+                                    <use href={editIcon} />
                                 </svg>
-                            </span>
-                        </div>
-                    </footer>
-                </div>
-            ));
+                            </div>
+                            <div className="card-footer-item has-text-danger is-clickable" onClick={(e) => this.handleDeleteClick(e, tea.id)}>
+                                <span className="icon">
+                                    <svg className="feather" width="20" height="20">
+                                        <use href="/feather-sprite.svg#trash" />
+                                    </svg>
+                                </span>
+                            </div>
+                        </footer>
+                    </div>
+                )
+            });
         } else {
             noImages = <div className='block is-size-1 is-align-self-flex-end' key="1">No teas</div>;
         }
