@@ -122,14 +122,14 @@ export class TeasTable extends Component {
         if (this.props.teas.length > 0) {
             images = this.props.teas.map(tea => {
                 let style = 'card m-1';
-                let click = () => { };
+                let click = () => this.handleClick(tea.id);
                 let edit = (e) => this.props.openEditPopup(e, tea.id);
                 let editIcon = '/feather-sprite.svg#edit';
 
                 if (tea.isDisabled) {
                     // disabled card are light grey and no click
                     style += ' has-text-grey-light';
-                    click = () => this.handleClick(tea.id);
+                    click = () => { };
 
                     // disabled can't be edited but enabled
                     edit = async (e) => {
@@ -141,7 +141,7 @@ export class TeasTable extends Component {
 
                 return (
                     <div className={style} key={tea.id} >
-                        <div className='card-content is-clickable p-4' onClick={click}>
+                        <div className={('card-content p-4' + ((tea.isDisabled) ? '' : ' is-clickable'))} onClick={click}>
                             <p className='mb-1 is-size-4'>{tea.name}</p>
                             <div className='level is-mobile has-text-grey mb-3'>
                                 <div className='level-left'>
