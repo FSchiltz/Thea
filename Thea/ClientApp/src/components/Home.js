@@ -14,7 +14,7 @@ export class Home extends Component {
 		this.notifyStorageKey = "Thea.Notify";
 		var notify = (localStorage.getItem(this.notifyStorageKey) === 'true');
 
-		this.disableStorageKey = "Thea.Notify";
+		this.disableStorageKey = "Thea.Disable";
 		var disable = (localStorage.getItem(this.disableStorageKey) === 'true');
 
 		this.state = {
