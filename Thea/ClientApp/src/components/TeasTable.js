@@ -40,10 +40,10 @@ export class TeasTable extends Component {
         this.setState({ delete: null });
     }
 
-    handleDeleteClick(e, id) {
+    handleDeleteClick(e, tea) {
         e.preventDefault();
 
-        this.setState({ delete: id })
+        this.setState({ delete: tea.id, isDisabled: tea.isDisabled })
     }
 
     closePopup() {
@@ -176,7 +176,7 @@ export class TeasTable extends Component {
                                     <use href={editIcon} />
                                 </svg>
                             </div>
-                            <div className="card-footer-item has-text-danger is-clickable" onClick={(e) => this.handleDeleteClick(e, tea.id)}>
+                            <div className="card-footer-item has-text-danger is-clickable" onClick={(e) => this.handleDeleteClick(e, tea)}>
                                 <span className="icon">
                                     <svg className="feather" width="20" height="20">
                                         <use href="/feather-sprite.svg#trash" />
@@ -196,7 +196,7 @@ export class TeasTable extends Component {
                 {images}
 
                 {noImages}
-                <Confirm handleSubmit={this.deleteTea} handleDisable={this.disableTea} handleClose={this.handleClose} text="Are you sure you ?" isOpen={this.state.delete} />
+                <Confirm handleSubmit={this.deleteTea} handleDisable={this.disableTea} handleClose={this.handleClose} text="Are you sure you ?" isAlreadyDisabled={this.state.isDisabled} isOpen={this.state.delete} />
                 <TimerModal duration={this.state.duration} notifyDone={this.notifyDone} closePopup={this.closePopup} tea={this.state.tea} timerOn={this.state.timerOn} />
             </div>
         );
