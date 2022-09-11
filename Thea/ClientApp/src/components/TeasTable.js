@@ -142,7 +142,7 @@ export class TeasTable extends Component {
                 return (
                     <div className={style} key={tea.id} >
                         <div className='card-content is-clickable p-4' onClick={click}>
-                            <p className='title mb-1 is-size-4'>{tea.name}</p>
+                            <p className='mb-1 is-size-4'>{tea.name}</p>
                             <div className='level is-mobile has-text-grey mb-3'>
                                 <div className='level-left'>
                                     <div className='level-item'>
