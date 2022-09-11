@@ -18,12 +18,12 @@ public class TeaTests
     public async Task GetTeas()
     {
         var storage = Substitute.For<IDataStore>();
-        storage.GetTeasAsync().ReturnsForAnyArgs(new List<Models.Tea> {
+        storage.GetTeasAsync(false).ReturnsForAnyArgs(new List<Models.Tea> {
             new Models.Tea(Guid.NewGuid(), "")
         });
         var controller = new TeaController(storage, default);
 
-        var tea = await controller.GetAsync();
+        var tea = await controller.GetAsync(false);
 
         Assert.NotEmpty(tea);
     }
