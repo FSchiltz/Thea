@@ -6,7 +6,6 @@
     "bulma": "0.9.4",
     "http-proxy-middleware": "0.19.1",
     "merge": "2.1.1",
-    "node-sass": "^7.0.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-router-dom": "6.3.0",
