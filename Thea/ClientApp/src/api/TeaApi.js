@@ -1,8 +1,12 @@
 
 // API helper
 
-export async function getTeas() {
-    const response = await fetch('api/tea');
+export async function getTeas(disable) {
+    let url = 'api/tea';
+    if (disable)
+        url += '?disabled=true';
+
+    const response = await fetch(url);
     return await response.json();
 }
 
@@ -13,6 +17,14 @@ export async function getTea(id) {
 
 export async function deleteTea(id) {
     await fetch('/api/tea/' + id, { method: 'DELETE' });
+}
+
+export async function disableTea(id) {
+    await fetch('/api/tea/' + id + '/disable', { method: 'POST' });
+}
+
+export async function enableTea(id) {
+    await fetch('/api/tea/' + id + '/enable', { method: 'POST' });
 }
 
 export async function updateTea(tea) {

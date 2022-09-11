@@ -8,6 +8,7 @@ WORKDIR /source
 # copy everything else and build app
 COPY ./Thea ./app/
 WORKDIR /source/app
+RUN dotnet build
 RUN dotnet publish -c release -o /app 
 
 # final stage/image
