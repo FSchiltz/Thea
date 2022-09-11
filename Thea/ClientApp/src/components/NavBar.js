@@ -10,6 +10,7 @@ export class NavBar extends Component {
         this.state = { collapsed: true };
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleDisableChange = this.handleDisableChange.bind(this);
         this.onAddClick = this.onAddClick.bind(this);
         this.onFilterChanged = this.onFilterChanged.bind(this)
     }
@@ -24,6 +25,11 @@ export class NavBar extends Component {
             askNotifyPermission();
         if (this.props.onNotifyChanged)
             this.props.onNotifyChanged(e.target.checked);
+    }
+
+    handleDisableChange(e) {
+        if (this.props.onDisableChanged)
+            this.props.onDisableChanged(e.target.checked);
     }
 
     onFilterChanged(e) {
@@ -66,7 +72,8 @@ export class NavBar extends Component {
                             </div>
 
                             <div className="level-right">
-                                <Settings notify={this.props.notify} handleChange={this.handleChange} />
+                                <Settings notify={this.props.notify} handleChange={this.handleChange} disable={this.props.disable}
+                                    handleDisableChange={this.handleDisableChange} />
                             </div>
                         </div>
                     </div>
