@@ -6,7 +6,6 @@
     "bulma": "0.9.4",
     "http-proxy-middleware": "0.19.1",
     "merge": "2.1.1",
-    "node-sass": "^7.0.3",
     "package": "^1.0.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -27,6 +26,7 @@
     "workbox-streams": "6.5.4"
   },
   "devDependencies": {
+    "node-sass": "7.0.3",
     "ajv": "8.11.0",
     "cross-env": "7.0.3",
     "eslint": "8.23.0",
