@@ -45,7 +45,7 @@ public class FileDataStore : IDataStore
         else return null;
     }
 
-    public async Task<IEnumerable<Tea>> GetTeasAsync()
+    public async Task<IEnumerable<Tea>> GetTeasAsync(bool disabled)
     {
         var teas = new List<Tea>();
 
@@ -56,7 +56,7 @@ public class FileDataStore : IDataStore
             try
             {
                 var tea = await JsonSerializer.DeserializeAsync<Tea>(text);
-                if (tea != null && tea.Id != Guid.Empty)
+                if (tea != null && tea.Id != Guid.Empty && (disabled || !tea.IsDisabled))
                 {
                     teas.Add(tea);
                 }
@@ -108,5 +108,27 @@ public class FileDataStore : IDataStore
         using var stream = File.Create(fileName);
         await JsonSerializer.SerializeAsync(stream, tea);
         await stream.DisposeAsync();
+    }
+
+    public async Task EnableTeaAsync(Guid id)
+    {
+        var tea = await GetTeaAsync(id);
+
+        if (tea != null)
+        {
+            tea.IsDisabled = false;
+            await SaveTeaAsync(tea);
+        }
+    }
+
+    public async Task DisableTeaAsync(Guid id)
+    {
+        var tea = await GetTeaAsync(id);
+
+        if (tea != null)
+        {
+            tea.IsDisabled = true;
+            await SaveTeaAsync(tea);
+        }
     }
 }

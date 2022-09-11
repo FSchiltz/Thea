@@ -18,11 +18,11 @@ public class TeaController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Tea>> GetAsync()
+    public async Task<IEnumerable<Tea>> GetAsync([FromQuery] bool disabled)
     {
         _logger?.LogInformation("Get teas");
 
-        return (await _datastore.GetTeasAsync()).OrderBy(t => t.Name);
+        return (await _datastore.GetTeasAsync(disabled)).OrderBy(t => t.Name);
     }
 
     [HttpPost]
@@ -42,6 +42,22 @@ public class TeaController : ControllerBase
         _logger?.LogInformation("Order changed");
 
         await _datastore.SaveTeaOrderAsync(orders);
+    }
+
+    [HttpPost("{id}/Disable")]
+    public async Task DisableTeaAsync([FromRoute] Guid id)
+    {
+        _logger?.LogInformation("Tea disabled");
+
+        await _datastore.DisableTeaAsync(id);
+    }
+
+    [HttpPost("{id}/Enable")]
+    public async Task EnableTeaAsync([FromRoute] Guid id)
+    {
+        _logger?.LogInformation("Tea disabled");
+
+        await _datastore.EnableTeaAsync(id);
     }
 
     [HttpGet("{id}")]

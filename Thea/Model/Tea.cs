@@ -15,6 +15,9 @@ public class Tea
     // Order of display
     public int Order { get; set; }
 
+    // The tea is not to be displayed
+    public bool IsDisabled {get;set;}
+
     public Tea(Guid id, string name)
     {
         Name = name;

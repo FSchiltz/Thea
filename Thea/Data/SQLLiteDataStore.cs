@@ -16,6 +16,10 @@ public class SQLLiteDataStore : IDataStore, IDisposable
     private const string DEFAULTPATH = "storage/db/";
     private const string DEFAULTDB = "tea.db";
 
+    private readonly List<(string name, string sql)> _Migrations = new(){
+        ("field isDisabled","")
+    };
+
     public SQLLiteDataStore(StorageConfig config, ILogger<SQLLiteDataStore>? logger)
     {
         this.config = config;
@@ -45,6 +49,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
             Duration = reader.IsDBNull(3) ? new TimeSpan() : reader.GetTimeSpan(3),
             Temperature = reader.IsDBNull(4) ? 0 : reader.GetInt32(4),
             Order = reader.IsDBNull(5) ? 0 : reader.GetInt32(5),
+            IsDisabled = reader.IsDBNull(6) ? false : reader.GetBoolean(6),
         };
     }
 
@@ -62,10 +67,25 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = "CREATE TABLE IF NOT EXISTS Tea (id varchar(30), name varchar(20), description varchar(200), duration varchar(50), temperature int, display int);";
+        command.CommandText = "CREATE TABLE IF NOT EXISTS Tea (id varchar(30), name varchar(20), description varchar(200), duration varchar(50), temperature int, display int, disabled int);";
+
+        await ApplyMigration(connection);
 
         _logger?.LogInformation("Init sql lite with {Config}", config);
         await command.ExecuteNonQueryAsync();
+    }
+
+    private async Task ApplyMigration(SqliteConnection connection)
+    {
+        foreach (var migration in _Migrations)
+        {
+            var command = connection.CreateCommand();
+            command.CommandText = migration.sql;
+
+            await command.ExecuteNonQueryAsync();
+
+            _logger?.LogInformation("Migration applied: " + migration.name);
+        }
     }
 
     public async Task<Tea?> GetTeaAsync(Guid id)
@@ -75,7 +95,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = "SELECT id, name, description, duration, temperature, display FROM Tea WHERE id=$id;";
+        command.CommandText = "SELECT id, name, description, duration, temperature, display, disabled FROM Tea WHERE id=$id;";
         command.Parameters.AddWithValue("$id", id);
 
         using var reader = await command.ExecuteReaderAsync();
@@ -88,14 +108,16 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         return null;
     }
 
-    public async Task<IEnumerable<Tea>> GetTeasAsync()
+    public async Task<IEnumerable<Tea>> GetTeasAsync(bool disabled)
     {
         var connection = GetConnection();
 
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = "SELECT id, name, description, duration, temperature, display FROM Tea;";
+        command.CommandText = "SELECT id, name, description, duration, temperature, display, disabled FROM Tea";
+        if (!disabled)
+            command.CommandText += "WHERE disabled != 1;";
 
         using var reader = await command.ExecuteReaderAsync();
 
@@ -124,6 +146,36 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         command.Parameters.AddWithValue("$desc", tea.Description ?? "");
         command.Parameters.AddWithValue("$temp", tea.Temperature);
         command.Parameters.AddWithValue("$duration", tea.Duration);
+
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public async Task DisableTeaAsync(Guid id)
+    {
+             using var connection = GetConnection();
+
+        await connection.OpenAsync();
+
+        var command = connection.CreateCommand();
+        command.CommandText = "UPDATE Tea SET disabled=1  WHERE id=$id;";
+
+        command.Parameters.AddWithValue("$id", id);
+
+
+        await command.ExecuteNonQueryAsync();
+    }
+
+    public async Task EnableTeaAsync(Guid id)
+    {
+             using var connection = GetConnection();
+
+        await connection.OpenAsync();
+
+        var command = connection.CreateCommand();
+        command.CommandText = "UPDATE Tea SET disabled=0  WHERE id=$id;";
+
+        command.Parameters.AddWithValue("$id", id);
+
 
         await command.ExecuteNonQueryAsync();
     }
@@ -164,7 +216,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = "UPDATE Tea SET id=$id, name=$name, description=$desc, duration=$duration, temperature=$temp WHERE id=$id;";
+        command.CommandText = "UPDATE Tea SET name=$name, description=$desc, duration=$duration, temperature=$temp WHERE id=$id;";
 
         command.Parameters.AddWithValue("$id", tea.Id);
         command.Parameters.AddWithValue("$name", tea.Name);
