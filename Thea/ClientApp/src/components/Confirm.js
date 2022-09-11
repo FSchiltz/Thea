@@ -1,4 +1,4 @@
-const Confirm = ({ handleSubmit, handleClose, isOpen, text }) => {
+const Confirm = ({ handleSubmit, handleDisable, handleClose, isOpen, text }) => {
     const active = isOpen !== null ? "is-active" : "";
     return (<div className={`modal ${active}`}>
         <div className="modal-background"></div>
@@ -7,11 +7,14 @@ const Confirm = ({ handleSubmit, handleClose, isOpen, text }) => {
                 {text}
                 <div className="level">
                     <div className="level-left">
-                        
+
                     </div>
                     <div className="level-right">
                         <div className="level-item">
                             <button className="button" onClick={handleClose}>Cancel</button>
+                        </div>
+                        <div className="level-item">
+                            <button className="button is-danger" onClick={handleDisable}>Disable</button>
                         </div>
                         <div className="level-item">
                             <button className="button is-danger" onClick={handleSubmit}>Delete</button>

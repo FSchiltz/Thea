@@ -1,9 +1,9 @@
 import { Component } from "react";
-import { deleteTea, getTea } from "../api/TeaApi";
+import { deleteTea, disableTea, enableTea, getTea } from "../api/TeaApi";
 import { setTimer, stopTimer } from "../api/TimerApi";
 import { deconstructDuration, formatDuration } from "../helpers/Format";
 import { askNotifyPermission } from "../helpers/Notify";
-import Confirm from "./commons/Confirm";
+import Confirm from "./Confirm";
 import TimerModal from "./TimerModal";
 
 export class TeasTable extends Component {
@@ -24,6 +24,8 @@ export class TeasTable extends Component {
         this.notifyDone = this.notifyDone.bind(this);
         this.openEditPopup = this.props.openEditPopup.bind(this);
         this.deleteTea = this.deleteTea.bind(this);
+        this.enableTea = this.enableTea.bind(this);
+        this.disableTea = this.disableTea.bind(this);
         this.handleClose = this.handleClose.bind(this);
     }
 
@@ -53,6 +55,26 @@ export class TeasTable extends Component {
             // if so, create a notification
             new Notification("Tea ready !");
         }
+    }
+
+    async disableTea() {
+        await disableTea(this.state.delete);
+
+        console.log('Tea disabled');
+
+        this.setState({ delete: null });
+
+        await this.props.dataChanged();
+    }
+
+    async enableTea() {
+        await enableTea(this.state.delete);
+
+        console.log('Tea disabled');
+
+        this.setState({ delete: null });
+
+        await this.props.dataChanged();
     }
 
     async deleteTea() {
@@ -155,7 +177,7 @@ export class TeasTable extends Component {
                 {images}
 
                 {noImages}
-                <Confirm handleSubmit={this.deleteTea} handleClose={this.handleClose} text="Are you sure you ?" isOpen={this.state.delete} />
+                <Confirm handleSubmit={this.deleteTea} handleDisable={this.disableTea} handleClose={this.handleClose} text="Are you sure you ?" isOpen={this.state.delete} />
                 <TimerModal duration={this.state.duration} notifyDone={this.notifyDone} closePopup={this.closePopup} tea={this.state.tea} timerOn={this.state.timerOn} />
             </div>
         );
