@@ -78,7 +78,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         {
             // create the version field
             var commandMeta = connection.CreateCommand();
-            commandMeta.CommandText = "INSERT INTO Metadata VALUES ('Version','Version',0)";
+            commandMeta.CommandText = "INSERT INTO Metadata VALUES ('Version','Version', 0)";
             await commandMeta.ExecuteNonQueryAsync();
         }
 
@@ -104,8 +104,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
     private async Task SetVersion(SqliteConnection connection, int version)
     {
         var command = connection.CreateCommand();
-        command.CommandText = "UPDATE Metadata SET version=$version WHERE name='Version'";
-        command.Parameters.AddWithValue("$version", version);
+        command.CommandText = $"UPDATE Metadata SET Version={version} WHERE name='Version'";
         await command.ExecuteNonQueryAsync();
     }
 
@@ -123,11 +122,10 @@ public class SQLLiteDataStore : IDataStore, IDisposable
 
                 newVersion = Math.Max(newVersion, migration.version);
 
+                await SetVersion(connection, newVersion);
                 _logger?.LogInformation($"Migration applied v{migration.version}: " + migration.name);
             }
         }
-
-        await SetVersion(connection, newVersion);
     }
 
     public async Task<Tea?> GetTeaAsync(Guid id)
