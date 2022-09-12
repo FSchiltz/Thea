@@ -1,10 +1,14 @@
 version: "3.9"
+
+volumes:
+  storage:
+
 services:
   web:
     build: .
     ports:
       - "80:80"
     volumes:
-      - ./storage/docker/:/app/storage/
+      - storage:/app/storage/
     env_file:
       - .env

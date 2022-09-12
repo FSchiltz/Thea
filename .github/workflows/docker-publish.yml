@@ -8,6 +8,16 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
+strategy:
+  matrix:
+    include:
+      - dockerfile: ./Dockerfile.alpine-x64
+        plateform: amd64
+      - dockerfile: ./Dockerfile.alpine-arm64
+        platform: arm64
+      - dockerfile: ./Dockerfile
+        platform: multi
+
 jobs:
   build:
     name: Docker publish
@@ -34,5 +44,6 @@ jobs:
         with:
           context: .
           push: true
+          file: ${{ matrix.dockerfile }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
