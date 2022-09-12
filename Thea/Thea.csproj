@@ -12,8 +12,8 @@
     <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>a72e486c-b38f-4447-b3c5-e153e57834f3</UserSecretsId>
+    <RuntimeIdentifiers>linux-x64;win-x64;linux-arm</RuntimeIdentifiers>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-
   </PropertyGroup>
 
   <ItemGroup>
