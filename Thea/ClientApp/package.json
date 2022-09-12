@@ -42,6 +42,7 @@
   },
   "size-limit": [
     {
+      "limit": "100 kB",
       "path": "./build/**/*.js"
     }
   ],
