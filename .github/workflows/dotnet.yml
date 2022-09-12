@@ -39,3 +39,7 @@ jobs:
       - run: npm test
         name: Npm test
         working-directory: ./Thea/ClientApp
+        
+        # Check js size
+      - name: size-limit-action
+        uses: andresz1/size-limit-action@v1.7.0
