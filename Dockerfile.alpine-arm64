@@ -1,0 +1,20 @@
+# https://hub.docker.com/_/microsoft-dotnet
+FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine AS build
+
+RUN apk add --update npm
+WORKDIR /source
+
+# copy and publish app and libraries
+COPY ./Thea .
+RUN  dotnet publish -o /app -c release -r linux-musl-arm64 --self-contained true -p:PublishSingleFile=true -p:UseAppHost=true -p:PublishTrimmed=true -p:SuppressTrimAnalysisWarnings=true
+
+# final stage/image
+FROM mcr.microsoft.com/dotnet/runtime-deps:6.0-alpine-arm64v8
+WORKDIR /app
+COPY --from=build /app ./
+
+EXPOSE 80
+
+ENV DOTNET_EnableDiagnostics=0
+ENTRYPOINT ["./Thea"]
+
