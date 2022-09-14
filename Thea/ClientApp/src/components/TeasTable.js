@@ -1,12 +1,12 @@
 import { Component } from "react";
-import { deleteTea, disableTea, enableTea, getTea } from "../api/TeaApi";
+import { deleteTea, disableTea, enableTea, favoriteTea, getTea, unFavoriteTea } from "../api/TeaApi";
 import { setTimer, stopTimer } from "../api/TimerApi";
 import { deconstructDuration, formatDuration } from "../helpers/Format";
 import { askNotifyPermission } from "../helpers/Notify";
 import Confirm from "./Confirm";
 import TimerModal from "./TimerModal";
 
-const TeaCardMenu = ({ tea, openEditPopup, enableTea, disableTea, deleteTea }) => {
+const TeaCardMenu = ({ tea, openEditPopup, enableTea, disableTea, deleteTea, favoriteTea }) => {
     return <div className="dropdown is-hoverable">
         <div className="dropdown-trigger">
             <button className="button is-inverted is-primary mx-1 p-0" aria-haspopup="true" aria-controls="dropdown-menu4">
@@ -17,7 +17,7 @@ const TeaCardMenu = ({ tea, openEditPopup, enableTea, disableTea, deleteTea }) =
         </div>
         <div className="dropdown-menu" id="dropdown-menu4" role="menu">
             <div className="dropdown-content">
-                <div className={"dropdown-item" + (tea.isDisabled? " is-hidden":"")}>
+                <div className={"dropdown-item" + (tea.isDisabled ? " is-hidden" : "")}>
                     <div className="button is-primary is-inverted" onClick={openEditPopup}>
                         <span className="icon">
                             <svg className="feather" width="20" height="20">
@@ -26,8 +26,17 @@ const TeaCardMenu = ({ tea, openEditPopup, enableTea, disableTea, deleteTea }) =
                         </span>
                         <span>Edit</span>
                     </div>
+                </div> <div className={"dropdown-item" + (tea.isDisabled ? " is-hidden" : "")}>
+                    <div className="button is-primary is-inverted" onClick={favoriteTea}>
+                        <span className="icon">
+                            <svg className={"feather" + (tea.isFavorite ? "": " is-filled")} width="20" height="20">
+                                <use href="/feather-sprite.svg#heart" />
+                            </svg>
+                        </span>
+                        <span> {(tea.isFavorite ? "Unset" : "Set" ) + " favorite"}</span>
+                    </div>
                 </div>
-                <div className={"dropdown-item" + (tea.isDisabled? "":" is-hidden")}>
+                <div className={"dropdown-item" + (tea.isDisabled ? "" : " is-hidden")}>
                     <div className="button is-primary is-inverted" onClick={enableTea}>
                         <span className="icon">
                             <svg className="feather" width="20" height="20">
@@ -37,7 +46,7 @@ const TeaCardMenu = ({ tea, openEditPopup, enableTea, disableTea, deleteTea }) =
                         <span>Enable</span>
                     </div>
                 </div>
-                <div className={"dropdown-item" + (tea.isDisabled? " is-hidden":"")}>
+                <div className={"dropdown-item" + (tea.isDisabled ? " is-hidden" : "")}>
                     <div className="button is-warning is-light is-inverted" onClick={disableTea}>
                         <span className="icon">
                             <svg className="feather" width="20" height="20">
@@ -84,6 +93,7 @@ export class TeasTable extends Component {
         this.handleClose = this.handleClose.bind(this);
         this.handleEnableTea = this.handleEnableTea.bind(this);
         this.handleDisableTea = this.handleDisableTea.bind(this);
+        this.handleFavoriteTea = this.handleFavoriteTea.bind(this);
     }
 
     handleClick(e) {
@@ -123,6 +133,15 @@ export class TeasTable extends Component {
         await enableTea(id);
         this.props.dataChanged();
     };
+
+    async handleFavoriteTea(tea) {
+        if (tea.isFavorite) {
+            await unFavoriteTea(tea.id);
+        } else {
+            await favoriteTea(tea.id);
+        }
+        this.props.dataChanged();
+    }
 
     async deleteTea() {
         await deleteTea(this.state.delete);
@@ -183,7 +202,8 @@ export class TeasTable extends Component {
                                 <TeaCardMenu tea={tea} openEditPopup={(e) => this.props.openEditPopup(e, tea.id)}
                                     enableTea={() => this.handleEnableTea(tea.id)}
                                     disableTea={() => this.handleDisableTea(tea.id)}
-                                    deleteTea={(e) => this.handleDeleteClick(e, tea)} />
+                                    deleteTea={(e) => this.handleDeleteClick(e, tea)}
+                                    favoriteTea={() => this.handleFavoriteTea(tea)} />
                             </div>
                             <div className='level is-mobile has-text-grey mb-2'>
                                 <div className='level-left'>
@@ -214,12 +234,17 @@ export class TeasTable extends Component {
                                             <span>{formatDuration(tea.duration)}</span>
                                         </div>
                                     </div>
+                                    <div className='level-item'>
+                                        {tea.isFavorite ? <svg className="feather is-filled has-text-danger" width="20" height="20">
+                                            <use href="/feather-sprite.svg#heart" />
+                                        </svg> : null}
+                                    </div>
                                 </div>
                             </div>
 
                             <div className='content ellipsis'>{tea.description}</div>
                         </div>
-                    </div>
+                    </div >
                 )
             });
         } else {

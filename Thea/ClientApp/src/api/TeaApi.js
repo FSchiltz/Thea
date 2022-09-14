@@ -27,6 +27,14 @@ export async function enableTea(id) {
     await fetch('/api/tea/' + id + '/enable', { method: 'POST' });
 }
 
+export async function favoriteTea(id) {
+    await fetch('/api/tea/' + id + '/favorite', { method: 'POST' });
+}
+
+export async function unFavoriteTea(id) {
+    await fetch('/api/tea/' + id + '/favorite', { method: 'DELETE' });
+}
+
 export async function updateTea(tea) {
     await fetch('/api/tea/', {
         method: 'POST',
