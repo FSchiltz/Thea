@@ -22,7 +22,7 @@ public class TeaController : ControllerBase
     {
         _logger?.LogInformation("Get teas");
 
-        return (await _datastore.GetTeasAsync(disabled)).OrderBy(t => t.Name);
+        return (await _datastore.GetTeasAsync(disabled)).OrderByDescending(t => t.IsFavorite).ThenBy(t => t.Name);
     }
 
     [HttpPost]
@@ -60,18 +60,18 @@ public class TeaController : ControllerBase
         await _datastore.EnableTeaAsync(id);
     }
 
-    [HttpPost("{id}/Favorite")]
+    [HttpDelete("{id}/Favorite")]
     public async Task RemoveFavoriteTeaAsync([FromRoute] Guid id)
     {
-        _logger?.LogInformation("Tea disabled");
+        _logger?.LogInformation("Tea removed from favorite");
 
         await _datastore.DeleteFavoriteTeaAsync(id);
     }
 
-    [HttpDelete("{id}/Favorite")]
+    [HttpPost("{id}/Favorite")]
     public async Task DeleteFavoriteTeaAsync([FromRoute] Guid id)
     {
-        _logger?.LogInformation("Tea disabled");
+        _logger?.LogInformation("Tea added to favorite");
 
         await _datastore.AddFavoriteTeaAsync(id);
     }
