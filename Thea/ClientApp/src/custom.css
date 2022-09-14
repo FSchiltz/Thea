@@ -1,8 +1,26 @@
-
 .feather {
   stroke: currentColor;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
   fill: none;
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.no-wrap {
+  white-space: nowrap;
+}
+
+.card-small {
+  max-width: 25em;
+}
+
+.card-justify {
+  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
 }
