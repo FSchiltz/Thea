@@ -7,11 +7,6 @@ import Confirm from "./Confirm";
 import TimerModal from "./TimerModal";
 
 const TeaCardMenu = ({ tea, openEditPopup, enableTea, disableTea, deleteTea }) => {
-
-    if (tea.isDisabled) {
-        // disabled can't be edited but enabled
-    }
-
     return <div className="dropdown is-hoverable">
         <div className="dropdown-trigger">
             <button className="button is-inverted is-primary mx-1 p-0" aria-haspopup="true" aria-controls="dropdown-menu4">
@@ -22,7 +17,7 @@ const TeaCardMenu = ({ tea, openEditPopup, enableTea, disableTea, deleteTea }) =
         </div>
         <div className="dropdown-menu" id="dropdown-menu4" role="menu">
             <div className="dropdown-content">
-                <div className="dropdown-item">
+                <div className={"dropdown-item" + (tea.isDisabled? " is-hidden":"")}>
                     <div className="button is-primary is-inverted" onClick={openEditPopup}>
                         <span className="icon">
                             <svg className="feather" width="20" height="20">
@@ -32,7 +27,7 @@ const TeaCardMenu = ({ tea, openEditPopup, enableTea, disableTea, deleteTea }) =
                         <span>Edit</span>
                     </div>
                 </div>
-                <div className="dropdown-item">
+                <div className={"dropdown-item" + (tea.isDisabled? "":" is-hidden")}>
                     <div className="button is-primary is-inverted" onClick={enableTea}>
                         <span className="icon">
                             <svg className="feather" width="20" height="20">
@@ -42,8 +37,8 @@ const TeaCardMenu = ({ tea, openEditPopup, enableTea, disableTea, deleteTea }) =
                         <span>Enable</span>
                     </div>
                 </div>
-                <div className="dropdown-item">
-                    <div className="button is-warning is-inverted" onClick={disableTea}>
+                <div className={"dropdown-item" + (tea.isDisabled? " is-hidden":"")}>
+                    <div className="button is-warning is-light is-inverted" onClick={disableTea}>
                         <span className="icon">
                             <svg className="feather" width="20" height="20">
                                 <use href="/feather-sprite.svg#eye-off" />
