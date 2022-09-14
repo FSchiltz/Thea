@@ -164,7 +164,6 @@ export class Home extends Component {
 			allTeas = allTeas.filter((tea) => tea.name.toLocaleLowerCase().includes(filter));
 		}
 
-		console.log("filtered :" + filter);
 		this.setState({ teas: allTeas });
 	}
 

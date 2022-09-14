@@ -121,15 +121,13 @@ export class TeasTable extends Component {
         let noImages;
         if (this.props.teas.length > 0) {
             images = this.props.teas.map(tea => {
-                let style = 'card m-1';
-                let click = () => this.handleClick(tea.id);
+                let style = 'card card-small card-justify m-1';
                 let edit = (e) => this.props.openEditPopup(e, tea.id);
                 let editIcon = '/feather-sprite.svg#edit';
 
                 if (tea.isDisabled) {
                     // disabled card are light grey and no click
                     style += ' has-text-grey-light';
-                    click = () => { };
 
                     // disabled can't be edited but enabled
                     edit = async (e) => {
@@ -141,14 +139,14 @@ export class TeasTable extends Component {
 
                 return (
                     <div className={style} key={tea.id} >
-                        <div className={('card-content p-4' + ((tea.isDisabled) ? '' : ' is-clickable'))} onClick={click}>
-                            <p className='mb-1 is-size-4'>{tea.name}</p>
-                            <div className='level is-mobile has-text-grey mb-3'>
+                        <div className='card-content px-3 py-2'>
+                            <p className='mb-1 is-size-4 ellipsis no-wrap'>{tea.name}</p>
+                            <div className='level is-mobile has-text-grey mb-2'>
                                 <div className='level-left'>
                                     <div className='level-item'>
-                                        <div className='box icon-text p-2'>
+                                        <div className='box icon-text p-1'>
                                             <span className="icon">
-                                                <svg className="feather" width="25" height="25">
+                                                <svg className="feather" width="16" height="16">
                                                     <use href="/feather-sprite.svg#thermometer" />
                                                 </svg>
                                             </span>
@@ -156,9 +154,9 @@ export class TeasTable extends Component {
                                         </div>
                                     </div>
                                     <div className='level-item'>
-                                        <div className='box icon-text p-2'>
+                                        <div className='box icon-text p-1'>
                                             <span className="icon">
-                                                <svg className="feather" width="25" height="25">
+                                                <svg className="feather" width="16" height="16">
                                                     <use href="/feather-sprite.svg#clock" />
                                                 </svg>
                                             </span>
@@ -168,9 +166,14 @@ export class TeasTable extends Component {
                                 </div>
                             </div>
 
-                            <div className='content'>{tea.description}</div>
+                            <div className='content ellipsis'>{tea.description}</div>
                         </div>
                         <footer className="card-footer">
+                            <div className={"card-footer-item has-text-primary is-clickable" + (tea.isDisabled ? " is-hidden" : "")} onClick={() => this.handleClick(tea.id)}>
+                                <svg className="feather" width="20" height="20">
+                                    <use href="/feather-sprite.svg#clock" />
+                                </svg>
+                            </div>
                             <div className="card-footer-item has-text-primary is-clickable" onClick={edit}>
                                 <svg className="feather" width="20" height="20">
                                     <use href={editIcon} />
