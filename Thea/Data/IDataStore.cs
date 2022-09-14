@@ -15,4 +15,6 @@ public interface IDataStore
     Task SaveTeaOrderAsync(IEnumerable<(Guid id, int order)> orders);
     Task EnableTeaAsync(Guid id);
     Task DisableTeaAsync(Guid id);
+    Task DeleteFavoriteTeaAsync(Guid id);
+    Task AddFavoriteTeaAsync(Guid id);
 }
