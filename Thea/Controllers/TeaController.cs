@@ -60,6 +60,22 @@ public class TeaController : ControllerBase
         await _datastore.EnableTeaAsync(id);
     }
 
+    [HttpPost("{id}/Favorite")]
+    public async Task RemoveFavoriteTeaAsync([FromRoute] Guid id)
+    {
+        _logger?.LogInformation("Tea disabled");
+
+        await _datastore.DeleteFavoriteTeaAsync(id);
+    }
+
+    [HttpDelete("{id}/Favorite")]
+    public async Task DeleteFavoriteTeaAsync([FromRoute] Guid id)
+    {
+        _logger?.LogInformation("Tea disabled");
+
+        await _datastore.AddFavoriteTeaAsync(id);
+    }
+
     [HttpGet("{id}")]
     public async Task<Tea?> GetTeaAsync([FromRoute] Guid id)
     {

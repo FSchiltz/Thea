@@ -131,4 +131,26 @@ public class FileDataStore : IDataStore
             await SaveTeaAsync(tea);
         }
     }
+
+    public async Task DeleteFavoriteTeaAsync(Guid id)
+    {  
+        var tea = await GetTeaAsync(id);
+
+        if (tea != null)
+        {
+            tea.IsFavorite = true;
+            await SaveTeaAsync(tea);
+        }
+    }
+
+    public async Task AddFavoriteTeaAsync(Guid id)
+    {  
+        var tea = await GetTeaAsync(id);
+
+        if (tea != null)
+        {
+            tea.IsFavorite = true;
+            await SaveTeaAsync(tea);
+        }
+    }
 }

@@ -16,9 +16,12 @@ public class SQLLiteDataStore : IDataStore, IDisposable
     private const string DEFAULTPATH = "storage/db/";
     private const string DEFAULTDB = "tea.db";
 
+    private const string SELECTQUERY = "SELECT id, name, description, duration, temperature, display, disabled, favorite FROM Tea";
+
     private readonly List<(string name, int version, string sql)> _Migrations = new(){
         ("Init", 1, "CREATE TABLE IF NOT EXISTS Tea (id varchar(30), name varchar(20), description varchar(200), duration varchar(50), temperature int, display int);"),
         ("Field isDisabled", 2, "ALTER TABLE Tea ADD COLUMN disabled INT DEFAULT 0 NOT NULL;"),
+        ("Field isFavorite", 3, "ALTER TABLE Tea ADD COLUMN favorite INT DEFAULT 0 NOT NULL;"),
     };
 
     public SQLLiteDataStore(StorageConfig config, ILogger<SQLLiteDataStore>? logger)
@@ -51,6 +54,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
             Temperature = reader.IsDBNull(4) ? 0 : reader.GetInt32(4),
             Order = reader.IsDBNull(5) ? 0 : reader.GetInt32(5),
             IsDisabled = reader.IsDBNull(6) ? false : reader.GetBoolean(6),
+            IsFavorite = reader.IsDBNull(7) ? false : reader.GetBoolean(7),
         };
     }
 
@@ -135,7 +139,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = "SELECT id, name, description, duration, temperature, display, disabled FROM Tea WHERE id=$id;";
+        command.CommandText = SELECTQUERY + " WHERE id=$id;";
         command.Parameters.AddWithValue("$id", id);
 
         using var reader = await command.ExecuteReaderAsync();
@@ -155,7 +159,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = $"SELECT id, name, description, duration, temperature, display, disabled FROM Tea {(!disabled ? "WHERE disabled != 1" : "")};";
+        command.CommandText = $"{SELECTQUERY} {(!disabled ? "WHERE disabled != 1" : "")};";
 
         using var reader = await command.ExecuteReaderAsync();
 
@@ -188,50 +192,14 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         await command.ExecuteNonQueryAsync();
     }
 
-    public async Task DisableTeaAsync(Guid id)
+    public Task DisableTeaAsync(Guid id)
     {
-        using var connection = GetConnection();
-
-        await connection.OpenAsync();
-
-        var command = connection.CreateCommand();
-        command.CommandText = "UPDATE Tea SET disabled=1  WHERE id=$id;";
-
-        command.Parameters.AddWithValue("$id", id);
-
-
-        await command.ExecuteNonQueryAsync();
+        return UpdateMetadate(id, "disabled", "1");
     }
 
-    public async Task EnableTeaAsync(Guid id)
+    public Task EnableTeaAsync(Guid id)
     {
-        using var connection = GetConnection();
-
-        await connection.OpenAsync();
-
-        var command = connection.CreateCommand();
-        command.CommandText = "UPDATE Tea SET disabled=0  WHERE id=$id;";
-
-        command.Parameters.AddWithValue("$id", id);
-
-
-        await command.ExecuteNonQueryAsync();
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!disposedValue)
-        {
-            if (disposing)
-            {
-                // TODO: dispose managed state (managed objects)
-            }
-
-            if (_connection != null)
-                _connection.Dispose();
-
-            disposedValue = true;
-        }
+        return UpdateMetadate(id, "disabled", "0");
     }
 
     public async Task DeleteTeaAsync(Guid id)
@@ -265,21 +233,6 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         await command.ExecuteNonQueryAsync();
     }
 
-
-    // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-    ~SQLLiteDataStore()
-    {
-        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        Dispose(disposing: false);
-    }
-
-    public void Dispose()
-    {
-        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
-    }
-
     public async Task SaveTeaOrderAsync(IEnumerable<(Guid id, int order)> orders)
     {
         using var connection = GetConnection();
@@ -296,5 +249,59 @@ public class SQLLiteDataStore : IDataStore, IDisposable
 
             await command.ExecuteNonQueryAsync();
         }
+    }
+
+    public Task DeleteFavoriteTeaAsync(Guid id)
+    {
+        return UpdateMetadate(id, "favorite", "0");
+    }
+
+    public Task AddFavoriteTeaAsync(Guid id)
+    {
+        return UpdateMetadate(id, "favorite", "1");
+    }
+
+    private async Task UpdateMetadate(Guid id, string field, string value)
+    {
+        using var connection = GetConnection();
+
+        await connection.OpenAsync();
+
+        var command = connection.CreateCommand();
+        command.CommandText = $"UPDATE Tea SET {field}={value}  WHERE id=$id;";
+
+        command.Parameters.AddWithValue("$id", id);
+
+        await command.ExecuteNonQueryAsync();
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                // TODO: dispose managed state (managed objects)
+            }
+
+            if (_connection != null)
+                _connection.Dispose();
+
+            disposedValue = true;
+        }
+    }
+
+    // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+    ~SQLLiteDataStore()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: false);
+    }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }
