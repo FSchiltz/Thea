@@ -133,7 +133,7 @@ export class Home extends Component {
 			contents = <p><em>Loading...</em></p>
 		else {
 			contents =
-				<div>
+				<div>					  
 					<AddModal add={this.state.add} closeAddPopup={this.closeAddPopup} edit={this.state.edit} formChanged={this.formChanged}
 						newTea={this.state.newTea} saveNewTea={this.saveNewTea} />
 					<TeasTable teas={this.state.teas} openEditPopup={this.openEditPopup} notify={this.state.notify}
