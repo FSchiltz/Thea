@@ -188,7 +188,7 @@ export class TeasTable extends Component {
                             <div className='level is-mobile has-text-grey mb-2'>
                                 <div className='level-left'>
                                     <div className="level-item" >
-                                        <div className="button is-primary is-inverted" disabled={(tea.isDisabled)} onClick={(tea.isDisabled ? () => { } : () => this.handleClick(tea.id))}>
+                                        <div className="button py-1 px-2 is-primary is-inverted" disabled={(tea.isDisabled)} onClick={(tea.isDisabled ? () => { } : () => this.handleClick(tea.id))}>
                                             <svg className="feather" width="20" height="20">
                                                 <use href="/feather-sprite.svg#play" />
                                             </svg>
