@@ -1,16 +1,38 @@
-import React, { Component } from 'react';
+import React, { ChangeEvent, Component } from 'react';
+import { deconstructDuration, getDuration } from '../../helpers/Time';
+import Tea from '../../model/Tea';
 
-export class AddForm extends Component {
-    constructor(props) {
+class AddFormState {
+    constructor(tea: Tea) {
+        this.id = tea.id;
+        this.name = tea.name ?? '';
+        this.description = tea.description ?? '';
+        this.temperature = tea.temperature ?? '';
+
+        const [durationMinutes, durationSeconds] = deconstructDuration(tea.duration);
+        this.durationSeconds = durationSeconds;
+        this.durationMinutes = durationMinutes;
+    }
+
+    id?: string;
+    duration?: string;
+    temperature: number = 0;
+    name?: string;
+    description?: string;
+    durationMinutes: number = 0;
+    durationSeconds: number = 0;
+}
+
+interface AddFormProps {
+    tea: Tea;
+    onChange: (name: Tea) => void;
+}
+
+export default class AddForm extends Component<AddFormProps, AddFormState> {
+    constructor(props: AddFormProps | Readonly<AddFormProps>) {
         super(props);
-        this.state = {
-            id: this.props.id,
-            name: this.props.name ?? '',
-            description: this.props.description ?? '',
-            temperature: this.props.temperature ?? '',
-            durationMinutes: this.props.durationMinutes ?? '',
-            durationSeconds: this.props.durationSeconds ?? '',
-        };
+
+        this.state = new AddFormState(this.props.tea);
 
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
@@ -19,29 +41,36 @@ export class AddForm extends Component {
         this.handleSecondsChange = this.handleSecondsChange.bind(this);
     }
 
-    handleDescriptionChange(event) {
+    handleDescriptionChange(event: ChangeEvent<HTMLTextAreaElement>) {
         this.setState({ description: event.target.value }, () => this.changed());
     }
 
-    handleNameChange(event) {
+    handleNameChange(event: ChangeEvent<HTMLInputElement>) {
         this.setState({ name: event.target.value }, () => this.changed());
     }
 
-    handleTemperatureChange(event) {
-        this.setState({ temperature: event.target.value }, () => this.changed());
+    handleTemperatureChange(event: ChangeEvent<HTMLInputElement>) {
+        this.setState({ temperature: event.target.valueAsNumber }, () => this.changed());
     }
 
-    handleMinutesChange(event) {
-        this.setState({ durationMinutes: event.target.value }, () => this.changed());
+    handleMinutesChange(event: ChangeEvent<HTMLInputElement>) {
+        this.setState({ durationMinutes: event.target.valueAsNumber }, () => this.changed());
     }
 
-    handleSecondsChange(event) {
-        this.setState({ durationSeconds: event.target.value }, () => this.changed());
+    handleSecondsChange(event: ChangeEvent<HTMLInputElement>) {
+        this.setState({ durationSeconds: event.target.valueAsNumber }, () => this.changed());
     }
 
     changed() {
-        if (this.props.onChange) {
-            this.props.onChange(this.state);
+        if (this.props.onChange) {          
+            const tea = new Tea();
+            tea.id = this.state.id;
+            tea.description = this.state.description;
+            tea.duration = getDuration(this.state.durationMinutes, this.state.durationSeconds);
+            tea.name = this.state.name;
+            tea.temperature = this.state.temperature;
+            
+            this.props.onChange(tea);
         }
     }
 
@@ -55,7 +84,7 @@ export class AddForm extends Component {
 
                 <div className="field">
                     <label className='label'>Description</label>
-                    <textarea className='textarea' type="text" name="description" placeholder="Description" value={this.state.description} onChange={this.handleDescriptionChange} />
+                    <textarea className='textarea' name="description" placeholder="Description" value={this.state.description} onChange={this.handleDescriptionChange} />
                 </div>
 
                 <div className='field'>

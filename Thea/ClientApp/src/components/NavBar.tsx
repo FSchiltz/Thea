@@ -3,8 +3,18 @@ import { askNotifyPermission } from "../helpers/Notify";
 import "./NavBar.css";
 import { Settings } from "./Settings";
 
-export class NavBar extends Component {
-    constructor(props) {
+interface NavBarProps {
+    onAddClick: any;
+    onNotifyChanged: any;
+    onDisableChanged: any;
+    onFilterChanged: any;
+    notify: any;
+    filter: string;
+    disable: boolean;
+}
+
+export class NavBar extends Component<NavBarProps> {
+    constructor(props: NavBarProps | Readonly<NavBarProps>) {
         super(props);
 
         this.state = { collapsed: true };
@@ -20,19 +30,19 @@ export class NavBar extends Component {
             this.props.onAddClick();
     }
 
-    handleChange(e) {
+    handleChange(e: { target: { checked: any; }; }) {
         if (e.target.checked)
             askNotifyPermission();
         if (this.props.onNotifyChanged)
             this.props.onNotifyChanged(e.target.checked);
     }
 
-    handleDisableChange(e) {
+    handleDisableChange(e: { target: { checked: any; }; }) {
         if (this.props.onDisableChanged)
             this.props.onDisableChanged(e.target.checked);
     }
 
-    onFilterChanged(e) {
+    onFilterChanged(e: { target: { value: any; }; }) {
         if (this.props.onFilterChanged)
             this.props.onFilterChanged(e.target.value);
     }

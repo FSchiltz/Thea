@@ -1,6 +1,13 @@
-import { useState } from "react"
+import React,{ useState } from "react";
 
-export const Settings = ({ notify, handleChange, disable, handleDisableChange }) => {
+interface SettingsProps {
+    notify: any;
+    handleChange: any;
+    disable: any;
+    handleDisableChange: any;
+}
+
+export const Settings = ({ notify, handleChange, disable, handleDisableChange }: SettingsProps) => {
     const [toggle, setToggle] = useState(false);
 
     const handleToggle = () => {
