@@ -1,6 +1,18 @@
-import { AddForm } from "./AddForm";
+import React, { MouseEventHandler } from "react";
+import Tea from "../../model/Tea";
+import AddForm from "./AddForm";
 
-const AddModal = ({ edit, add, newTea, formChanged, closeAddPopup, saveNewTea }) => {
+interface AddModalProps {
+    edit: boolean;
+    add: boolean;
+    newTea: Tea,
+    formChanged: (name: Tea) => void;
+    closeAddPopup:  MouseEventHandler<HTMLButtonElement>;
+    saveNewTea: MouseEventHandler<HTMLButtonElement>;
+
+}
+
+export default function AddModal({ edit, add, newTea, formChanged, closeAddPopup, saveNewTea }: AddModalProps) {
     if (edit || add) {
         const active = "is-active";
 
@@ -12,9 +24,7 @@ const AddModal = ({ edit, add, newTea, formChanged, closeAddPopup, saveNewTea })
                 <div className="content box">
                     <span className="is-size-3">{title}</span>
                     <div className="p-4">
-                        <AddForm onChange={formChanged} name={newTea.name} description={newTea.description}
-                            temperature={newTea.temperature} durationMinutes={newTea.durationMinutes}
-                            durationSeconds={newTea.durationSeconds} id={newTea.id}></AddForm>
+                        <AddForm onChange={formChanged} tea={newTea}></AddForm>
                     </div>
                     <div className="level">
                         <div className="level-left">
@@ -31,7 +41,6 @@ const AddModal = ({ edit, add, newTea, formChanged, closeAddPopup, saveNewTea })
                 </div>
             </div>
         </div>
-    }
+    } else
+        return <div></div>
 }
-
-export default AddModal;

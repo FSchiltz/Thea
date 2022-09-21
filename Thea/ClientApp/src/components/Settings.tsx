@@ -1,6 +1,13 @@
-import { useState } from "react"
+import React,{ ChangeEventHandler, useState } from "react";
 
-export const Settings = ({ notify, handleChange, disable, handleDisableChange }) => {
+interface SettingsProps {
+    notify: boolean;
+    handleChange: ChangeEventHandler<HTMLInputElement>;
+    disable: boolean;
+    handleDisableChange: ChangeEventHandler<HTMLInputElement>;
+}
+
+export const Settings = ({ notify, handleChange, disable, handleDisableChange }: SettingsProps) => {
     const [toggle, setToggle] = useState(false);
 
     const handleToggle = () => {

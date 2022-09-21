@@ -1,5 +1,14 @@
-const Confirm = ({ handleSubmit, handleClose, isOpen, text }) => {
-    const active = isOpen !== null ? "is-active" : "";
+import React, { MouseEventHandler } from "react";
+
+interface ConfirmProps {
+    handleSubmit: MouseEventHandler<HTMLButtonElement>;
+    handleClose: MouseEventHandler<HTMLButtonElement>;
+    isOpen: boolean;
+    text: string;
+}
+
+const Confirm = ({ handleSubmit, handleClose, isOpen, text }: ConfirmProps) => {
+    const active = isOpen ? "is-active" : "";
 
     return (<div className={`modal ${active}`}>
         <div className="modal-background"></div>
