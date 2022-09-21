@@ -1,5 +1,5 @@
 
-export function formatDuration(duration) {
+export function formatDuration(duration: string) {
     if (duration) {
         const splitted = duration.split(':');
 
@@ -7,11 +7,11 @@ export function formatDuration(duration) {
     } else return '';
 }
 
-export function createDuration(minutes, seconds) {
+export function createDuration(minutes: any, seconds: any) {
     return `00:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
 
-export function deconstructDuration(duration) {
+export function deconstructDuration(duration: string) {
     const date = duration.split(':');
     const minutes = parseInt(date[1]);
     const seconds = parseInt(date[2]);
