@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { getTime } from '../helpers/Time';
 
-const useCountdown = (targetDate: Date, total: any) => {
+const useCountdown = (targetDate: Date, total: number) => {
 	const countDownDate = useMemo(() => {
 		return new Date(targetDate);
 	}, [targetDate]);

@@ -1,14 +1,14 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import Tea from "../../model/Tea";
 import AddForm from "./AddForm";
 
 interface AddModalProps {
-    edit: any;
-    add: any;
+    edit: boolean;
+    add: boolean;
     newTea: Tea,
     formChanged: (name: Tea) => void;
-    closeAddPopup: any;
-    saveNewTea: any;
+    closeAddPopup:  MouseEventHandler<HTMLButtonElement>;
+    saveNewTea: MouseEventHandler<HTMLButtonElement>;
 
 }
 

@@ -6,7 +6,7 @@ import DateTimeDisplay from './DateTimeDisplay';
 interface CountdownTimerProps {
 	targetDate: Date;
 	total: number;
-	callback: any;
+	callback: () => void;
 }
 
 const CountdownTimer = ({ targetDate, total, callback }: CountdownTimerProps) => {
@@ -32,9 +32,9 @@ const CountdownTimer = ({ targetDate, total, callback }: CountdownTimerProps) =>
 		return (
 			<div>
 				<div className="countdown-link">
-					<DateTimeDisplay value={String(minutes).padStart(2, '0')} isDanger={isDanger} />
+					<DateTimeDisplay value={minutes} isDanger={isDanger} />
 					<span>:</span>
-					<DateTimeDisplay value={String(seconds).padStart(2, '0')} isDanger={isDanger} />
+					<DateTimeDisplay value={seconds} isDanger={isDanger} />
 				</div>
 				<progress className={isDanger ? 'progress is-danger' : 'progress is-primary'} max="100" value={percent}></progress>
 			</div>

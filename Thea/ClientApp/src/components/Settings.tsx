@@ -1,10 +1,10 @@
-import React,{ useState } from "react";
+import React,{ ChangeEventHandler, useState } from "react";
 
 interface SettingsProps {
-    notify: any;
-    handleChange: any;
-    disable: any;
-    handleDisableChange: any;
+    notify: boolean;
+    handleChange: ChangeEventHandler<HTMLInputElement>;
+    disable: boolean;
+    handleDisableChange: ChangeEventHandler<HTMLInputElement>;
 }
 
 export const Settings = ({ notify, handleChange, disable, handleDisableChange }: SettingsProps) => {

@@ -67,8 +67,8 @@ export default class Home extends Component<HomeProps, HomeState> {
 		this.populateteasData();
 	}
 
-	onFilterChanged(e: any) {
-		this.setState({ filter: e }, this.filter);
+	onFilterChanged(filter: string) {
+		this.setState({ filter: filter }, this.filter);
 	}
 
 	onNotifyChanged(notify: boolean) {
@@ -89,9 +89,7 @@ export default class Home extends Component<HomeProps, HomeState> {
 		this.setState({ add: true, edit: false, newTea: newTea });
 	}
 
-	async openEditPopup(e: { preventDefault: () => void; }, id: string) {
-		e.preventDefault();
-
+	async openEditPopup(id: string) {
 		const newTea = await getTea(id);
 
 		this.setState({ add: false, edit: true, newTea: newTea });

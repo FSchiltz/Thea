@@ -1,8 +1,8 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 
 interface ConfirmProps {
-    handleSubmit: any;
-    handleClose: any;
+    handleSubmit: MouseEventHandler<HTMLButtonElement>;
+    handleClose: MouseEventHandler<HTMLButtonElement>;
     isOpen: boolean;
     text: string;
 }

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { deleteTea, disableTea, enableTea, favoriteTea, getTea, unFavoriteTea } from "../../api/TeaApi";
 import { setTimer, stopTimer } from "../../api/TimerApi";
-import { formatDuration } from "../../helpers/Format";
 import { askNotifyPermission } from "../../helpers/Notify";
 import Confirm from "../Confirm";
 import TeaCard from "./TeaCard";
@@ -11,9 +10,9 @@ import { deconstructDuration } from "../../helpers/Time";
 
 interface TeasTableProps {
     notify: boolean;
-    dataChanged: any;
+    dataChanged: () => void;
     teas: Tea[];
-    openEditPopup: any;
+    openEditPopup: (id: string) => void;
 }
 
 class TeasTableState {
@@ -26,7 +25,7 @@ class TeasTableState {
 }
 
 export class TeasTable extends Component<TeasTableProps, TeasTableState> {
-    openEditPopup: any;
+    openEditPopup: (id: string) => void;
 
     constructor(props: TeasTableProps | Readonly<TeasTableProps>) {
         super(props);
@@ -52,21 +51,19 @@ export class TeasTable extends Component<TeasTableProps, TeasTableState> {
         this.handleFavoriteTea = this.handleFavoriteTea.bind(this);
     }
 
-    handleClick(e: any) {
+    handleClick(id: string) {
         // if the user wants notification we ask before the timer is done
         if (this.props.notify)
             askNotifyPermission();
-        this.selectTea(e);
+        this.selectTea(id);
     }
 
     handleClose() {
         this.setState({ delete: undefined });
     }
 
-    handleDeleteClick(e: { preventDefault: () => void; }, tea: { id: any; isDisabled: any; }) {
-        e.preventDefault();
-
-        this.setState({ delete: tea.id, isDisabled: tea.isDisabled })
+    handleDeleteClick(id: string) {
+        this.setState({ delete: id })
     }
 
     closePopup() {
@@ -90,7 +87,10 @@ export class TeasTable extends Component<TeasTableProps, TeasTableState> {
         this.props.dataChanged();
     };
 
-    async handleFavoriteTea(tea: { isFavorite: any; id: string; }) {
+    async handleFavoriteTea(tea: Tea) {
+        if (!tea.id)
+            return;
+
         if (tea.isFavorite) {
             await unFavoriteTea(tea.id);
         } else {
@@ -145,9 +145,9 @@ export class TeasTable extends Component<TeasTableProps, TeasTableState> {
         let images;
         let noImages;
         if (this.props.teas.length > 0) {
-            images = this.props.teas.map((tea: any) => {
+            images = this.props.teas.map((tea: Tea) => {
                 return (
-                    <TeaCard key={tea.id} tea={tea} formatDuration={formatDuration} openEditPopup={this.props.openEditPopup}
+                    <TeaCard key={tea.id} tea={tea} openEditPopup={this.props.openEditPopup}
                         handleEnableTea={this.handleEnableTea} handleDisableTea={this.handleDisableTea}
                         handleDeleteClick={this.handleDeleteClick} handleFavoriteTea={this.handleFavoriteTea} handleClick={this.handleClick} />
                 )

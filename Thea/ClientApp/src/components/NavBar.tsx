@@ -1,14 +1,14 @@
-import React, { Component } from "react";
+import React, { ChangeEvent, Component } from "react";
 import { askNotifyPermission } from "../helpers/Notify";
 import "./NavBar.css";
 import { Settings } from "./Settings";
 
 interface NavBarProps {
-    onAddClick: any;
-    onNotifyChanged: any;
-    onDisableChanged: any;
-    onFilterChanged: any;
-    notify: any;
+    onAddClick: () => void;
+    onNotifyChanged: (event: boolean) => void;
+    onDisableChanged: (event: boolean) => void;
+    onFilterChanged: (event: string) => void;
+    notify: boolean;
     filter: string;
     disable: boolean;
 }
@@ -30,19 +30,19 @@ export class NavBar extends Component<NavBarProps> {
             this.props.onAddClick();
     }
 
-    handleChange(e: { target: { checked: any; }; }) {
+    handleChange(e: ChangeEvent<HTMLInputElement>) {
         if (e.target.checked)
             askNotifyPermission();
         if (this.props.onNotifyChanged)
             this.props.onNotifyChanged(e.target.checked);
     }
 
-    handleDisableChange(e: { target: { checked: any; }; }) {
+    handleDisableChange(e: ChangeEvent<HTMLInputElement>) {
         if (this.props.onDisableChanged)
             this.props.onDisableChanged(e.target.checked);
     }
 
-    onFilterChanged(e: { target: { value: any; }; }) {
+    onFilterChanged(e: ChangeEvent<HTMLInputElement>) {
         if (this.props.onFilterChanged)
             this.props.onFilterChanged(e.target.value);
     }

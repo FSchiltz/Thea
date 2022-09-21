@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { MouseEventHandler } from 'react';
 import { getTime } from '../../helpers/Time';
 import Tea from '../../model/Tea';
 import CountdownTimer from './CountdownTimer';
 
 interface TimerModalProps {
     duration?: Date;
-    notifyDone: any;
-    closePopup: any;
+    notifyDone: () => void;
+    closePopup: MouseEventHandler<HTMLButtonElement>;
     tea?: Tea;
-    timerOn: any;
+    timerOn: boolean;
 }
 
 export default function TimerModal({ duration, notifyDone, closePopup, tea, timerOn }: TimerModalProps) {
