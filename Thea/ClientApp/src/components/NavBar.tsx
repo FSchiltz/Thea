@@ -5,6 +5,7 @@ import { Settings } from "./Settings";
 
 interface NavBarProps {
     onAddClick: () => void;
+    onImportClick: () => void;
     onNotifyChanged: (event: boolean) => void;
     onDisableChanged: (event: boolean) => void;
     onFilterChanged: (event: string) => void;
@@ -22,12 +23,18 @@ export class NavBar extends Component<NavBarProps> {
         this.handleChange = this.handleChange.bind(this);
         this.handleDisableChange = this.handleDisableChange.bind(this);
         this.onAddClick = this.onAddClick.bind(this);
+        this.onImportClick = this.onImportClick.bind(this);
         this.onFilterChanged = this.onFilterChanged.bind(this)
     }
 
     onAddClick() {
         if (this.props.onAddClick)
             this.props.onAddClick();
+    }
+
+    onImportClick() {
+        if(this.props.onImportClick)
+            this.props.onImportClick();
     }
 
     handleChange(e: ChangeEvent<HTMLInputElement>) {
@@ -64,6 +71,13 @@ export class NavBar extends Component<NavBarProps> {
                                         <span className="icon">
                                             <svg className="feather">
                                                 <use href="/feather-sprite.svg#plus" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <div className="button is-primary" onClick={this.onImportClick}>
+                                        <span className="icon">
+                                            <svg className="feather">
+                                                <use href="/feather-sprite.svg#upload" />
                                             </svg>
                                         </span>
                                     </div>

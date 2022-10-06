@@ -9,7 +9,6 @@ interface AddModalProps {
     formChanged: (name: Tea) => void;
     closeAddPopup:  MouseEventHandler<HTMLButtonElement>;
     saveNewTea: MouseEventHandler<HTMLButtonElement>;
-
 }
 
 export default function AddModal({ edit, add, newTea, formChanged, closeAddPopup, saveNewTea }: AddModalProps) {

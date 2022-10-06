@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { NavBar } from './NavBar';
 import { askNotifyPermission } from '../helpers/Notify';
-import { getTeas, getTea, updateTea } from '../api/TeaApi';
+import { getTeas, getTea, updateTea, importTea } from '../api/TeaApi';
 import { TeasTable } from './Teas/TeasTable';
 import AddModal from './Teas/AddModal';
-import Tea  from '../model/Tea';
+import Tea from '../model/Tea';
+import ImportModal from './Teas/ImportModal';
+import ErrorModal from './ErrorModal';
 
 interface HomeState {
 	newTea: Tea;
@@ -14,6 +16,7 @@ interface HomeState {
 	loading: boolean;
 	edit: boolean;
 	add: boolean;
+	import: boolean;
 	notify: boolean;
 	showDisable: boolean;
 	error?: any;
@@ -42,6 +45,7 @@ export default class Home extends Component<HomeProps, HomeState> {
 			loading: true,
 			edit: false,
 			add: false,
+			import: false,
 			notify: notify,
 			showDisable: disable,
 			newTea: new Tea()
@@ -52,11 +56,14 @@ export default class Home extends Component<HomeProps, HomeState> {
 		this.openEditPopup = this.openEditPopup.bind(this);
 		this.closeAddPopup = this.closeAddPopup.bind(this);
 		this.saveNewTea = this.saveNewTea.bind(this);
+		this.saveImport = this.saveImport.bind(this);
+		this.openImportPopup = this.openImportPopup.bind(this);
 		this.formChanged = this.formChanged.bind(this);
 		this.onNotifyChanged = this.onNotifyChanged.bind(this);
 		this.dataChanged = this.dataChanged.bind(this);
 		this.onFilterChanged = this.onFilterChanged.bind(this);
 		this.onDisableChanged = this.onDisableChanged.bind(this);
+		this.closeError = this.closeError.bind(this);
 	}
 
 	componentDidMount() {
@@ -86,17 +93,21 @@ export default class Home extends Component<HomeProps, HomeState> {
 	openSavePopup() {
 		const newTea = this.state.newTea;
 		newTea.id = undefined;
-		this.setState({ add: true, edit: false, newTea: newTea });
+		this.setState({ add: true, edit: false, import: false, newTea: newTea });
+	}
+
+	openImportPopup() {
+		this.setState({ add: false, edit: false, import: true });
 	}
 
 	async openEditPopup(id: string) {
 		const newTea = await getTea(id);
 
-		this.setState({ add: false, edit: true, newTea: newTea });
+		this.setState({ add: false, edit: true, import: false, newTea: newTea });
 	}
 
 	closeAddPopup() {
-		this.setState({ edit: false, add: false });
+		this.setState({ edit: false, add: false, import: false });
 	}
 
 	formChanged(event: Tea) {
@@ -111,8 +122,23 @@ export default class Home extends Component<HomeProps, HomeState> {
 		await this.populateteasData();
 	}
 
+	async saveImport(json: string) {
+		const result = await importTea(json);
+
+		if (result.ok) {
+			this.closeAddPopup();
+			await this.populateteasData();
+		} else {
+			this.displayError(result.statusText);
+		}
+	}
+
 	displayError(e: unknown) {
-		this.setState({ error: e })
+		this.setState({ error: e });
+	}
+
+	closeError() {
+		this.setState({error: null});
 	}
 
 	render() {
@@ -122,21 +148,19 @@ export default class Home extends Component<HomeProps, HomeState> {
 			contents = <p><em>Loading...</em></p>
 		else {
 			contents =
-				<div>
+				<>
 					<AddModal add={this.state.add} closeAddPopup={this.closeAddPopup} edit={this.state.edit} formChanged={this.formChanged}
 						newTea={this.state.newTea} saveNewTea={this.saveNewTea} />
+					<ImportModal display={this.state.import} close={this.closeAddPopup} save={this.saveImport} />
 					<TeasTable teas={this.state.teas} openEditPopup={this.openEditPopup} notify={this.state.notify}
 						dataChanged={this.dataChanged} />
-				</div>;
-		}
-
-		if (this.state.error) {
-			contents = <div>Error</div>
+					<ErrorModal error={this.state.error} close={this.closeError}></ErrorModal>
+				</>;
 		}
 
 		return (
 			<div>
-				<NavBar onAddClick={this.openSavePopup}
+				<NavBar onAddClick={this.openSavePopup} onImportClick={this.openImportPopup}
 					notify={this.state.notify} onNotifyChanged={this.onNotifyChanged}
 					disable={this.state.showDisable} onDisableChanged={this.onDisableChanged}
 					onFilterChanged={this.onFilterChanged} filter={this.state.filter}></NavBar>
