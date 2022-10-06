@@ -46,3 +46,13 @@ export async function updateTea(tea: Tea) {
         },
     })
 }
+
+export function importTea(json: string) {
+    return fetch('/api/tea/import', {
+        method: 'POST',
+        body: json,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+}

@@ -36,6 +36,18 @@ public class TeaController : ControllerBase
             await _datastore.SaveTeaAsync(tea);
     }
 
+    [HttpPost("import")]
+    public async Task ImportAsync([FromBody] Tea[] teas)
+    {
+        _logger?.LogInformation("New teas imported");
+
+        foreach (var tea in teas)
+            if (tea.Id != Guid.Empty)
+                await _datastore.UpdateTeaAsync(tea);
+            else
+                await _datastore.SaveTeaAsync(tea);
+    }
+
     [HttpPost("Order")]
     public async Task PostOrderAsync([FromBody] IEnumerable<(Guid id, int order)> orders)
     {
