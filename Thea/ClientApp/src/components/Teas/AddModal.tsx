@@ -1,13 +1,14 @@
 import React, { MouseEventHandler } from "react";
 import Tea from "../../model/Tea";
 import AddForm from "./AddForm";
+import TeaCard from "./TeaCard";
 
 interface AddModalProps {
     edit: boolean;
     add: boolean;
     newTea: Tea,
     formChanged: (name: Tea) => void;
-    closeAddPopup:  MouseEventHandler<HTMLButtonElement>;
+    closeAddPopup: MouseEventHandler<HTMLButtonElement>;
     saveNewTea: MouseEventHandler<HTMLButtonElement>;
 }
 
@@ -24,6 +25,10 @@ export default function AddModal({ edit, add, newTea, formChanged, closeAddPopup
                     <span className="is-size-3">{title}</span>
                     <div className="p-4">
                         <AddForm onChange={formChanged} tea={newTea}></AddForm>
+                    </div>
+                    <div className="p-4">
+                        <label className="label">Preview</label>
+                        <TeaCard tea={newTea}></TeaCard>
                     </div>
                     <div className="level">
                         <div className="level-left">

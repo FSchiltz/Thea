@@ -5,19 +5,16 @@ import TeaCardMenu from "./TeaCardMenu";
 
 interface TeaCardProps {
     tea: Tea;
-    handleEnableTea: (id: string)=> void;
-    handleDisableTea: (id: string) => void;
-    handleDeleteClick: (id: string)=> void;
-    handleFavoriteTea: (id: Tea)=> void;
-    handleClick: (id: string) => void;
-    openEditPopup: (id: string) => void;
+    handleEnableTea?: (id: string) => void;
+    handleDisableTea?: (id: string) => void;
+    handleDeleteClick?: (id: string) => void;
+    handleFavoriteTea?: (id: Tea) => void;
+    handleClick?: (id: string) => void;
+    openEditPopup?: (id: string) => void;
 }
 
 export default function TeaCard({ tea, handleEnableTea, handleDisableTea, handleDeleteClick, handleFavoriteTea, handleClick, openEditPopup }: TeaCardProps) {
-    if (!tea.id)
-        return <div></div>;
 
-    const id = tea.id;
 
     let style = 'card card-small card-justify m-1';
 
@@ -26,18 +23,29 @@ export default function TeaCard({ tea, handleEnableTea, handleDisableTea, handle
         style += ' has-text-grey-light';
     }
 
-    return <div className={style} key={id}>
+    let click = () => { };
+    let menu = <></>;
+    if (tea.id) {
+        const id = tea.id;
+
+        if (!tea.isDisabled)
+            click = () => handleClick?.(id);
+
+        menu = <TeaCardMenu tea={tea} openEditPopup={e => openEditPopup?.(id)} enableTea={() => handleEnableTea?.(id)}
+            disableTea={() => handleDisableTea?.(id)}
+            deleteTea={() => handleDeleteClick?.(id)} favoriteTea={() => handleFavoriteTea?.(tea)} />
+    }
+
+    return <div className={style} key={tea.id}>
         <div className='card-content px-3 py-2'>
-            <div className="level m-0">
+            <div className="level is-mobile m-0">
                 <p className='mb-1 is-size-4 ellipsis no-wrap'>{tea.name}</p>
-                <TeaCardMenu tea={tea} openEditPopup={e => openEditPopup(id)} enableTea={() => handleEnableTea(id)}
-                    disableTea={() => handleDisableTea(id)}
-                    deleteTea={() => handleDeleteClick(id)} favoriteTea={() => handleFavoriteTea(tea)} />
+                {menu}
             </div>
             <div className='level is-mobile has-text-grey mb-2'>
                 <div className='level-left'>
                     <div className="level-item">
-                        <button className="button py-1 px-2 is-primary is-inverted" disabled={tea.isDisabled} onClick={tea.isDisabled ? () => { } : () => handleClick(id)}>
+                        <button className="button py-1 px-2 is-primary is-inverted" disabled={tea.isDisabled} onClick={click}>
                             <svg className="feather" width="20" height="20">
                                 <use href="/feather-sprite.svg#play" />
                             </svg>
