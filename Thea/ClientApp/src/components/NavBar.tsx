@@ -14,11 +14,17 @@ interface NavBarProps {
     disable: boolean;
 }
 
-export class NavBar extends Component<NavBarProps> {
+interface NavBarState {
+    collapsed: boolean;
+    prevScrollpos: number;
+    visible: boolean;
+}
+
+export class NavBar extends Component<NavBarProps, NavBarState> {
     constructor(props: NavBarProps | Readonly<NavBarProps>) {
         super(props);
 
-        this.state = { collapsed: true };
+        this.state = { collapsed: true, prevScrollpos: window.pageYOffset, visible: true };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleDisableChange = this.handleDisableChange.bind(this);
@@ -27,13 +33,33 @@ export class NavBar extends Component<NavBarProps> {
         this.onFilterChanged = this.onFilterChanged.bind(this)
     }
 
+    componentDidMount() {
+        window.addEventListener("scroll", this.handleScroll);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("scroll", this.handleScroll);
+    }
+
+    handleScroll = () => {
+        const prevScrollpos = this.state.prevScrollpos;
+
+        const currentScrollPos = window.pageYOffset;
+        const visible = window.innerWidth > 640 || prevScrollpos > currentScrollPos;
+
+        this.setState({
+            prevScrollpos: currentScrollPos,
+            visible
+        });
+    };
+
     onAddClick() {
         if (this.props.onAddClick)
             this.props.onAddClick();
     }
 
     onImportClick() {
-        if(this.props.onImportClick)
+        if (this.props.onImportClick)
             this.props.onImportClick();
     }
 
@@ -55,9 +81,14 @@ export class NavBar extends Component<NavBarProps> {
     }
 
     render() {
+        let style = "navbar is-fixed-top has-shadow";
+        if (!this.state.visible) {
+            style += " is-hidden-scroll";
+        }
+
         return (
             <div>
-                <nav className="navbar is-fixed-top has-shadow" role="navigation" aria-label="main navigation">
+                <nav className={style} role="navigation" aria-label="main navigation">
                     <div className="navbar-brand navbar-center">
                         <div className="navbar-item">
                             <img src="/logo.png" alt="Thea" />
