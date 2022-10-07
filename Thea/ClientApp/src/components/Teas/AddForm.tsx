@@ -8,6 +8,7 @@ class AddFormState {
         this.name = tea.name ?? '';
         this.description = tea.description ?? '';
         this.temperature = tea.temperature ?? '';
+        this.color = tea.color ?? '';
 
         const [durationMinutes, durationSeconds] = deconstructDuration(tea.duration);
         this.durationSeconds = durationSeconds;
@@ -18,6 +19,7 @@ class AddFormState {
     duration?: string;
     temperature: number = 0;
     name?: string;
+    color?: string;
     description?: string;
     durationMinutes: number = 0;
     durationSeconds: number = 0;
@@ -39,6 +41,7 @@ export default class AddForm extends Component<AddFormProps, AddFormState> {
         this.handleTemperatureChange = this.handleTemperatureChange.bind(this);
         this.handleMinutesChange = this.handleMinutesChange.bind(this);
         this.handleSecondsChange = this.handleSecondsChange.bind(this);
+        this.handleColorChange = this.handleColorChange.bind(this);
     }
 
     handleDescriptionChange(event: ChangeEvent<HTMLTextAreaElement>) {
@@ -47,6 +50,10 @@ export default class AddForm extends Component<AddFormProps, AddFormState> {
 
     handleNameChange(event: ChangeEvent<HTMLInputElement>) {
         this.setState({ name: event.target.value }, () => this.changed());
+    }
+
+    handleColorChange(event: ChangeEvent<HTMLInputElement>) {
+        this.setState({ color: event.target.value }, () => this.changed());
     }
 
     handleTemperatureChange(event: ChangeEvent<HTMLInputElement>) {
@@ -69,6 +76,7 @@ export default class AddForm extends Component<AddFormProps, AddFormState> {
             tea.duration = getDuration(this.state.durationMinutes, this.state.durationSeconds);
             tea.name = this.state.name;
             tea.temperature = this.state.temperature;
+            tea.color = this.state.color;
             
             this.props.onChange(tea);
         }
@@ -123,6 +131,23 @@ export default class AddForm extends Component<AddFormProps, AddFormState> {
                         </div>
                         <p className="control">
                             <input className='input' type="number" name="temperature" placeholder="90 °C" value={this.state.temperature} onChange={this.handleTemperatureChange} />
+                        </p>
+                    </div>
+                </div>
+                <div className='field'>
+                    <label className='label' >Background color</label>
+                    <div className="field has-addons">
+                        <div className="control">
+                            <div className="button is-static">
+                                <span className="icon is-small is-left">
+                                    <svg className="feather">
+                                        <use href="/feather-sprite.svg#image" />
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                        <p className="control">
+                            <input className='input' style={{width: '50px'}} type="color" name="color" value={this.state.color} onChange={this.handleColorChange} />
                         </p>
                     </div>
                 </div>
