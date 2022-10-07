@@ -16,7 +16,7 @@ export default function TimerModal({ duration, notifyDone, closePopup, tea, time
         return <div></div>;
 
     const active = timerOn ? "is-active" : "";
-
+    
     return <div className={`modal ${active}`}>
         <div className="modal-background"></div>
         <div className='modal-content'>

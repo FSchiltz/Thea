@@ -29,6 +29,7 @@ const CountdownTimer = ({ targetDate, total, callback }: CountdownTimerProps) =>
 		return <ExpiredNotice />;
 	} else {
 		const isDanger = time <= 10;
+
 		return (
 			<div>
 				<div className="countdown-link">
@@ -36,7 +37,7 @@ const CountdownTimer = ({ targetDate, total, callback }: CountdownTimerProps) =>
 					<span>:</span>
 					<DateTimeDisplay value={seconds} isDanger={isDanger} />
 				</div>
-				<progress className={isDanger ? 'progress is-danger' : 'progress is-primary'} max="100" value={percent}></progress>
+				<progress className={isDanger ? 'progress is-danger' : 'progress'} max="100" value={percent}></progress>
 			</div>
 		);
 	}

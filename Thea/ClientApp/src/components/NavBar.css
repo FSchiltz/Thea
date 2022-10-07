@@ -1,7 +1,16 @@
 .navbar-center {
-    width: 100%;
-  }
+  width: 100%;
+}
 
-  .filter-input {
-    max-width: 320px;
-  }
+.filter-input {
+  max-width: 320px;
+}
+
+.navbar {
+  transform: translateY(0);
+  transition: transform 0.1s ease-in-out;
+}
+
+.navbar.is-hidden-scroll {
+  transform: translateY(-105%);
+}
