@@ -1,4 +1,4 @@
-import React, { CSSProperties, MouseEventHandler } from 'react';
+import React, { MouseEventHandler } from 'react';
 import { getTime } from '../../helpers/Time';
 import Tea from '../../model/Tea';
 import CountdownTimer from './CountdownTimer';
@@ -16,16 +16,10 @@ export default function TimerModal({ duration, notifyDone, closePopup, tea, time
         return <div></div>;
 
     const active = timerOn ? "is-active" : "";
-
     
-    let color: CSSProperties = {};
-    if (tea.color) {
-        color.background = tea.color;
-    }
-
     return <div className={`modal ${active}`}>
         <div className="modal-background"></div>
-        <div className='modal-content' style={color}>
+        <div className='modal-content'>
             <div className='content box'>
                 <p className="is-size-3">{tea.name}</p>
 
