@@ -93,6 +93,7 @@ export default class Home extends Component<HomeProps, HomeState> {
 	openSavePopup() {
 		const newTea = this.state.newTea;
 		newTea.id = undefined;
+		newTea.isDisabled = false;
 		this.setState({ add: true, edit: false, import: false, newTea: newTea });
 	}
 
