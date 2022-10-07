@@ -16,12 +16,13 @@ public class SQLLiteDataStore : IDataStore, IDisposable
     private const string DEFAULTPATH = "storage/db/";
     private const string DEFAULTDB = "tea.db";
 
-    private const string SELECTQUERY = "SELECT id, name, description, duration, temperature, display, disabled, favorite FROM Tea";
+    private const string SELECTQUERY = "SELECT id, name, description, duration, temperature, display, disabled, favorite, color FROM Tea";
 
     private readonly List<(string name, int version, string sql)> _Migrations = new(){
         ("Init", 1, "CREATE TABLE IF NOT EXISTS Tea (id varchar(30), name varchar(20), description varchar(200), duration varchar(50), temperature int, display int);"),
         ("Field isDisabled", 2, "ALTER TABLE Tea ADD COLUMN disabled INT DEFAULT 0 NOT NULL;"),
         ("Field isFavorite", 3, "ALTER TABLE Tea ADD COLUMN favorite INT DEFAULT 0 NOT NULL;"),
+        ("Field color", 4, "ALTER TABLE Tea ADD COLUMN color varchar(20);"),
     };
 
     public SQLLiteDataStore(StorageConfig config, ILogger<SQLLiteDataStore>? logger)
@@ -55,6 +56,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
             Order = reader.IsDBNull(5) ? 0 : reader.GetInt32(5),
             IsDisabled = reader.IsDBNull(6) ? false : reader.GetBoolean(6),
             IsFavorite = reader.IsDBNull(7) ? false : reader.GetBoolean(7),
+            Color = reader.IsDBNull(8) ? null: reader.GetString(8),
         };
     }
 
@@ -179,7 +181,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = "INSERT INTO Tea (id, name, description, duration, temperature) VALUES ($id, $name, $desc, $duration, $temp);";
+        command.CommandText = "INSERT INTO Tea (id, name, description, duration, temperature, color) VALUES ($id, $name, $desc, $duration, $temp, $color);";
 
         var id = Guid.NewGuid();
 
@@ -188,18 +190,19 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         command.Parameters.AddWithValue("$desc", tea.Description ?? "");
         command.Parameters.AddWithValue("$temp", tea.Temperature);
         command.Parameters.AddWithValue("$duration", tea.Duration);
+        command.Parameters.AddWithValue("$color", tea.Color);
 
         await command.ExecuteNonQueryAsync();
     }
 
     public Task DisableTeaAsync(Guid id)
     {
-        return UpdateMetadate(id, "disabled", "1");
+        return UpdateMetadata(id, "disabled", "1");
     }
 
     public Task EnableTeaAsync(Guid id)
     {
-        return UpdateMetadate(id, "disabled", "0");
+        return UpdateMetadata(id, "disabled", "0");
     }
 
     public async Task DeleteTeaAsync(Guid id)
@@ -222,13 +225,14 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = "UPDATE Tea SET name=$name, description=$desc, duration=$duration, temperature=$temp WHERE id=$id;";
+        command.CommandText = "UPDATE Tea SET name=$name, description=$desc, duration=$duration, temperature=$temp, color=$color WHERE id=$id;";
 
         command.Parameters.AddWithValue("$id", tea.Id);
         command.Parameters.AddWithValue("$name", tea.Name);
         command.Parameters.AddWithValue("$desc", tea.Description ?? "");
         command.Parameters.AddWithValue("$temp", tea.Temperature);
         command.Parameters.AddWithValue("$duration", tea.Duration);
+        command.Parameters.AddWithValue("$color", tea.Color);
 
         await command.ExecuteNonQueryAsync();
     }
@@ -253,15 +257,15 @@ public class SQLLiteDataStore : IDataStore, IDisposable
 
     public Task DeleteFavoriteTeaAsync(Guid id)
     {
-        return UpdateMetadate(id, "favorite", "0");
+        return UpdateMetadata(id, "favorite", "0");
     }
 
     public Task AddFavoriteTeaAsync(Guid id)
     {
-        return UpdateMetadate(id, "favorite", "1");
+        return UpdateMetadata(id, "favorite", "1");
     }
 
-    private async Task UpdateMetadate(Guid id, string field, string value)
+    private async Task UpdateMetadata(Guid id, string field, string value)
     {
         using var connection = GetConnection();
 

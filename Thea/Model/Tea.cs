@@ -20,6 +20,8 @@ public class Tea
 
     public bool IsFavorite { get; set; }
 
+    public string? Color { get; set; }
+
     public Tea(Guid id, string name)
     {
         Name = name;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { formatDuration } from "../../helpers/Format";
 import Tea from "../../model/Tea";
 import TeaCardMenu from "./TeaCardMenu";
@@ -36,7 +36,12 @@ export default function TeaCard({ tea, handleEnableTea, handleDisableTea, handle
             deleteTea={() => handleDeleteClick?.(id)} favoriteTea={() => handleFavoriteTea?.(tea)} />
     }
 
-    return <div className={style} key={tea.id}>
+    let color: CSSProperties = {};
+    if (tea.color) {
+        color.background = `linear-gradient(130deg, ${tea.color} 0%, rgba(45,253,113,0) 50%)`;
+    }
+
+    return <div className={style} key={tea.id} style={color}>
         <div className='card-content px-3 py-2'>
             <div className="level is-mobile m-0">
                 <p className='mb-1 is-size-4 ellipsis no-wrap'>{tea.name}</p>

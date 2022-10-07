@@ -6,4 +6,5 @@ export default class Tea {
 	description?: string;
     isDisabled: boolean = false;
     isFavorite: boolean = false;
+	color?: string;
 }
