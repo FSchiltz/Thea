@@ -28,3 +28,13 @@
 .is-filled {
   fill: currentColor;
 }
+
+.collapse-header-icon-collapse {
+  transform: rotate(0deg);
+  transition: transform 150ms ease-out;
+}
+
+.collapse-header-icon {
+  transform: rotate(180deg);
+  transition: transform 150ms ease-out;
+}
