@@ -9,6 +9,7 @@ class AddFormState {
         this.description = tea.description ?? '';
         this.temperature = tea.temperature ?? '';
         this.color = tea.color ?? '';
+        this.level = tea.level ?? '';
 
         const [durationMinutes, durationSeconds] = deconstructDuration(tea.duration);
         this.durationSeconds = durationSeconds;
@@ -23,6 +24,7 @@ class AddFormState {
     description?: string;
     durationMinutes: number = 0;
     durationSeconds: number = 0;
+    level: number = 0;
 }
 
 interface AddFormProps {
@@ -42,6 +44,11 @@ export default class AddForm extends Component<AddFormProps, AddFormState> {
         this.handleMinutesChange = this.handleMinutesChange.bind(this);
         this.handleSecondsChange = this.handleSecondsChange.bind(this);
         this.handleColorChange = this.handleColorChange.bind(this);
+        this.handleLevelChange = this.handleLevelChange.bind(this);
+    }
+
+    handleLevelChange(event: ChangeEvent<HTMLSelectElement>) {
+        this.setState({ level: parseInt(event.target.value) }, () => this.changed());
     }
 
     handleDescriptionChange(event: ChangeEvent<HTMLTextAreaElement>) {
@@ -69,7 +76,7 @@ export default class AddForm extends Component<AddFormProps, AddFormState> {
     }
 
     changed() {
-        if (this.props.onChange) {          
+        if (this.props.onChange) {
             const tea = new Tea();
             tea.id = this.state.id;
             tea.description = this.state.description;
@@ -77,7 +84,8 @@ export default class AddForm extends Component<AddFormProps, AddFormState> {
             tea.name = this.state.name;
             tea.temperature = this.state.temperature;
             tea.color = this.state.color;
-            
+            tea.level = this.state.level;
+
             this.props.onChange(tea);
         }
     }
@@ -135,6 +143,25 @@ export default class AddForm extends Component<AddFormProps, AddFormState> {
                     </div>
                 </div>
                 <div className='field'>
+                    <label className='label'>Tea level</label>
+                    <div className="control has-icons-left">
+                        <div className="select">
+                            <select defaultValue='0' onChange={this.handleLevelChange}>
+                                <option value='0'>Unkown</option>
+                                <option value='1'>No tea</option>
+                                <option value='2'>Low</option>
+                                <option value='3'>Medium</option>
+                                <option value='4'>Heavy</option>
+                            </select>
+                        </div>
+                        <span className="icon p-2  is-left">
+                            <svg className="feather">
+                                <use href="/feather-sprite.svg#coffee" />
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <div className='field'>
                     <label className='label' >Background color</label>
                     <div className="field has-addons">
                         <div className="control">
@@ -147,7 +174,7 @@ export default class AddForm extends Component<AddFormProps, AddFormState> {
                             </div>
                         </div>
                         <p className="control">
-                            <input className='input' style={{width: '50px'}} type="color" name="color" value={this.state.color} onChange={this.handleColorChange} />
+                            <input className='input' style={{ width: '50px' }} type="color" name="color" value={this.state.color} onChange={this.handleColorChange} />
                         </p>
                     </div>
                 </div>
