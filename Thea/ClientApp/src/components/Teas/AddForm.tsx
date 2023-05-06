@@ -1,4 +1,4 @@
-import React, { ChangeEvent, Component, MouseEventHandler } from 'react';
+import React, { ChangeEvent, Component } from 'react';
 import { deconstructDuration, getDuration } from '../../helpers/Time';
 import Tea from '../../model/Tea';
 
