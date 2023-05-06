@@ -20,7 +20,10 @@ public class Tea
 
     public bool IsFavorite { get; set; }
 
+    // Custom color for diplay
     public string? Color { get; set; }
+
+    public TeaLevel Level { get; set; }
 
     public Tea(Guid id, string name)
     {
