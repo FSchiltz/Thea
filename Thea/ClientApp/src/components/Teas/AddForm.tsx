@@ -1,4 +1,4 @@
-import React, { ChangeEvent, Component } from 'react';
+import React, { ChangeEvent, Component, MouseEventHandler } from 'react';
 import { deconstructDuration, getDuration } from '../../helpers/Time';
 import Tea from '../../model/Tea';
 
@@ -45,6 +45,11 @@ export default class AddForm extends Component<AddFormProps, AddFormState> {
         this.handleSecondsChange = this.handleSecondsChange.bind(this);
         this.handleColorChange = this.handleColorChange.bind(this);
         this.handleLevelChange = this.handleLevelChange.bind(this);
+        this.handleColorDelete = this.handleColorDelete.bind(this);
+    }
+
+    handleColorDelete(event: React.MouseEvent<HTMLDivElement>) {
+        this.setState({ color: undefined}, () => this.changed());
     }
 
     handleLevelChange(event: ChangeEvent<HTMLSelectElement>) {
@@ -176,6 +181,15 @@ export default class AddForm extends Component<AddFormProps, AddFormState> {
                         <p className="control">
                             <input className='input' style={{ width: '50px' }} type="color" name="color" value={this.state.color} onChange={this.handleColorChange} />
                         </p>
+                        <div className="control">
+                            <div className="button is-danger is-light" onClick={this.handleColorDelete}>
+                                <span className="icon is-small is-right">
+                                    <svg className="feather">
+                                        <use href="/feather-sprite.svg#x" />
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>

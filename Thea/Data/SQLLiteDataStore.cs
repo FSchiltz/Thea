@@ -192,7 +192,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         command.Parameters.AddWithValue("$desc", tea.Description ?? "");
         command.Parameters.AddWithValue("$temp", tea.Temperature);
         command.Parameters.AddWithValue("$duration", tea.Duration);
-        command.Parameters.AddWithValue("$color", tea.Color);
+        command.Parameters.AddWithValue("$color", tea.Color ?? "");
         command.Parameters.AddWithValue("$level", tea.Level);
 
         await command.ExecuteNonQueryAsync();
@@ -228,14 +228,15 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = "UPDATE Tea SET name=$name, description=$desc, duration=$duration, temperature=$temp, color=$color WHERE id=$id;";
+        command.CommandText = "UPDATE Tea SET name=$name, description=$desc, duration=$duration, temperature=$temp, color=$color, level=$level WHERE id=$id;";
 
         command.Parameters.AddWithValue("$id", tea.Id);
         command.Parameters.AddWithValue("$name", tea.Name);
         command.Parameters.AddWithValue("$desc", tea.Description ?? "");
         command.Parameters.AddWithValue("$temp", tea.Temperature);
         command.Parameters.AddWithValue("$duration", tea.Duration);
-        command.Parameters.AddWithValue("$color", tea.Color);
+        command.Parameters.AddWithValue("$color", tea.Color ?? "");
+        command.Parameters.AddWithValue("$level", tea.Level);
 
         await command.ExecuteNonQueryAsync();
     }

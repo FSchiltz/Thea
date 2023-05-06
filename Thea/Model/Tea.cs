@@ -25,8 +25,6 @@ public class Tea
 
     public TeaLevel Level { get; set; }
 
-    public string[]? Tags {get;set;}
-
     public Tea(Guid id, string name)
     {
         Name = name;
