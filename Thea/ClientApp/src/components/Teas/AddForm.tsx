@@ -48,7 +48,7 @@ export default class AddForm extends Component<AddFormProps, AddFormState> {
         this.handleColorDelete = this.handleColorDelete.bind(this);
     }
 
-    handleColorDelete(event: React.MouseEvent<HTMLDivElement>) {
+    handleColorDelete(_: React.MouseEvent<HTMLDivElement>) {
         this.setState({ color: undefined}, () => this.changed());
     }
 
