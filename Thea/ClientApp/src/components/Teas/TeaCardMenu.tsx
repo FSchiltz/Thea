@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import Tea from "../../model/Tea";
 
 interface TeaCardMenuProps {
@@ -11,9 +11,14 @@ interface TeaCardMenuProps {
 }
 
 export default function TeaCardMenu({ tea, openEditPopup, enableTea, disableTea, deleteTea, favoriteTea }: TeaCardMenuProps) {
+
+    let menuStyle: CSSProperties = {};
+    menuStyle.background = 'transparent';
+    
+
     return <div className="dropdown is-hoverable">
         <div className="dropdown-trigger">
-            <button className="button is-inverted is-primary mx-1 p-0" aria-haspopup="true" aria-controls="dropdown-menu4">
+            <button className="button is-white mx-1 p-0" style={menuStyle} aria-haspopup="true" aria-controls="dropdown-menu4">
                 <svg className="feather" width="20" height="20">
                     <use href="/feather-sprite.svg#more-vertical" />
                 </svg>
