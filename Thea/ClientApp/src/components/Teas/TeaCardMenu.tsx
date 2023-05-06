@@ -15,7 +15,6 @@ export default function TeaCardMenu({ tea, openEditPopup, enableTea, disableTea,
     let menuStyle: CSSProperties = {};
     menuStyle.background = 'transparent';
     
-
     return <div className="dropdown is-hoverable">
         <div className="dropdown-trigger">
             <button className="button is-white mx-1 p-0" style={menuStyle} aria-haspopup="true" aria-controls="dropdown-menu4">

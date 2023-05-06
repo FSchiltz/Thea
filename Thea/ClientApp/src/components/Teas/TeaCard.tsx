@@ -48,6 +48,9 @@ export default function TeaCard({ tea, handleEnableTea, handleDisableTea, handle
     const toggleCardState = () => {
         setExpanded(!expanded);
     }
+    let collapseStyle: CSSProperties = {};
+    collapseStyle.background = 'transparent';
+
 
     // else use the tea level
     switch (tea.level) {
@@ -71,6 +74,8 @@ export default function TeaCard({ tea, handleEnableTea, handleDisableTea, handle
 
     color.background = rightColor;
 
+    const hasDescription = !(tea.description === undefined || tea.description === null || tea.description === '');
+
     return <div className={style} key={tea.id} style={color}>
         <div className='card-content px-3 py-2'>
 
@@ -83,7 +88,7 @@ export default function TeaCard({ tea, handleEnableTea, handleDisableTea, handle
             <div className='level is-mobile has-text-grey mb-2'>
                 <div className='level-left'>
                     <div className="level-item">
-                        <button className="button py-1 px-2 is-primary is-inverted" disabled={tea.isDisabled} onClick={click}>
+                        <button className="button py-1 px-2 is-primary is-inverted" style={collapseStyle} disabled={tea.isDisabled} onClick={click}>
                             <svg className="feather" width="20" height="20">
                                 <use href="/feather-sprite.svg#play" />
                             </svg>
@@ -115,11 +120,12 @@ export default function TeaCard({ tea, handleEnableTea, handleDisableTea, handle
                         </svg> : null}
                     </div>
                     <div className='level-right' onClick={toggleCardState}>
-                        <a className={"collapse-header-icon" + (!expanded?'': '-collapse')} hidden={(tea.description == undefined || tea.description == null || tea.description == '')}>
+                        <div className={"button is-white collapse-header-icon" + (!expanded ? '' : '-collapse') + (hasDescription ? '' : ' is-hidden')}
+                            style={collapseStyle}>
                             <svg className="feather" width="20" height="20">
                                 <use href="/feather-sprite.svg#chevron-up" />
                             </svg>
-                        </a>
+                        </div>
                     </div>
                 </div>
             </div>
