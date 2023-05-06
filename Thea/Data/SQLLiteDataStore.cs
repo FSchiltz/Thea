@@ -16,13 +16,14 @@ public class SQLLiteDataStore : IDataStore, IDisposable
     private const string DEFAULTPATH = "storage/db/";
     private const string DEFAULTDB = "tea.db";
 
-    private const string SELECTQUERY = "SELECT id, name, description, duration, temperature, display, disabled, favorite, color FROM Tea";
+    private const string SELECTQUERY = "SELECT id, name, description, duration, temperature, display, disabled, favorite, color, level FROM Tea";
 
     private readonly List<(string name, int version, string sql)> _Migrations = new(){
         ("Init", 1, "CREATE TABLE IF NOT EXISTS Tea (id varchar(30), name varchar(20), description varchar(200), duration varchar(50), temperature int, display int);"),
         ("Field isDisabled", 2, "ALTER TABLE Tea ADD COLUMN disabled INT DEFAULT 0 NOT NULL;"),
         ("Field isFavorite", 3, "ALTER TABLE Tea ADD COLUMN favorite INT DEFAULT 0 NOT NULL;"),
         ("Field color", 4, "ALTER TABLE Tea ADD COLUMN color varchar(20);"),
+        ("Field Level", 5, "ALTER TABLE Tea ADD COLUMN level INT DEFAULT 0 NOT NULL;"),
     };
 
     public SQLLiteDataStore(StorageConfig config, ILogger<SQLLiteDataStore>? logger)
@@ -57,6 +58,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
             IsDisabled = reader.IsDBNull(6) ? false : reader.GetBoolean(6),
             IsFavorite = reader.IsDBNull(7) ? false : reader.GetBoolean(7),
             Color = reader.IsDBNull(8) ? null: reader.GetString(8),
+            Level = reader.IsDBNull(9) ? TeaLevel.Unkown : (TeaLevel)reader.GetInt32(9),
         };
     }
 
@@ -181,7 +183,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         await connection.OpenAsync();
 
         var command = connection.CreateCommand();
-        command.CommandText = "INSERT INTO Tea (id, name, description, duration, temperature, color) VALUES ($id, $name, $desc, $duration, $temp, $color);";
+        command.CommandText = "INSERT INTO Tea (id, name, description, duration, temperature, color, level) VALUES ($id, $name, $desc, $duration, $temp, $color, $level);";
 
         var id = Guid.NewGuid();
 
@@ -191,6 +193,7 @@ public class SQLLiteDataStore : IDataStore, IDisposable
         command.Parameters.AddWithValue("$temp", tea.Temperature);
         command.Parameters.AddWithValue("$duration", tea.Duration);
         command.Parameters.AddWithValue("$color", tea.Color);
+        command.Parameters.AddWithValue("$level", tea.Level);
 
         await command.ExecuteNonQueryAsync();
     }

@@ -38,7 +38,32 @@ export default function TeaCard({ tea, handleEnableTea, handleDisableTea, handle
 
     let color: CSSProperties = {};
     if (tea.color) {
+        // use the custom color if any
         color.background = `linear-gradient(130deg, ${tea.color} 0%, rgba(45,253,113,0) 50%)`;
+    } else {
+        let rgb = null;
+        // else use the tea level
+        switch (tea.level) {
+            case 0:
+            default:
+                break;
+            case 1:
+                // no tea
+                rgb = '#4DD5FF';
+                break;
+            case 2:
+                rgb = '#9DFF6D';
+                break;
+            case 3:
+                rgb = '#E6C600';
+                break;
+            case 4:
+                rgb = '#E62600';
+                break;
+        }
+        if (rgb != null) {
+            color.background = `linear-gradient(130deg, ${rgb} 0%, rgba(45,253,113,0) 50%)`;
+        }
     }
 
     return <div className={style} key={tea.id} style={color}>
