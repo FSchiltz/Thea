@@ -24,7 +24,7 @@
     "workbox-streams": "6.5.4"
   },
   "devDependencies": {
-    "@size-limit/file": "^8.1.0",
+    "@size-limit/file": "^8.2.4",
     "@types/jest": "^29.0.3",
     "@types/node": "^18.7.18",
     "@types/react": "^18.2.5",
