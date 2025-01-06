@@ -9,7 +9,16 @@ updates:
     directory: "/Thea/ClientApp" # Location of package manifests
     schedule:
       interval: "weekly"
+    groups:
+      all:
+        patterns: 
+          - "*"
+          
   - package-ecosystem: "nuget" # See documentation for possible values
     directory: "/Thea" # Location of package manifests
     schedule:
       interval: "weekly"
+    groups:
+      all:
+        patterns: 
+          - "*"
