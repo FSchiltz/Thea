@@ -45,7 +45,7 @@
 ## About The Project
 
 A simple selfhosted tea timer so you won't forget your infusion.
-Supprts mqtt to notify to allows integration with many notification setups.
+Supports mqtt to notify to allows integration with many notification setups.
 
 
 ### Built With
