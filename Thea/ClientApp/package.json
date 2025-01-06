@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "bulma": "0.9.4",
-    "http-proxy-middleware": "2.0.7",
+    "http-proxy-middleware": "3.0.3",
     "merge": "2.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
