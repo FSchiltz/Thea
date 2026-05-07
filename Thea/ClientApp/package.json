@@ -13,7 +13,7 @@
     "web-vitals": "4.2.4",
     "workbox-background-sync": "6.5.4",
     "workbox-broadcast-update": "7.3.0",
-    "workbox-cacheable-response": "6.5.4",
+    "workbox-cacheable-response": "7.4.1",
     "workbox-core": "7.3.0",
     "workbox-expiration": "7.3.0",
     "workbox-navigation-preload": "7.3.0",
